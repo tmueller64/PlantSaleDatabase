@@ -1,0 +1,77 @@
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/plantsale~subversion/!svn/ver/41/PlantSale/src
+END
+mkdb.cmd
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/plantsale~subversion/!svn/ver/3/PlantSale/src/mkdb.cmd
+END
+create-Plantsale.sql
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/plantsale~subversion/!svn/ver/39/PlantSale/src/create-Plantsale.sql
+END
+testquery.sql
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/plantsale~subversion/!svn/ver/3/PlantSale/src/testquery.sql
+END
+PSS Design.odt
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/plantsale~subversion/!svn/ver/3/PlantSale/src/PSS%20Design.odt
+END
+sellerinput.txt
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/plantsale~subversion/!svn/ver/3/PlantSale/src/sellerinput.txt
+END
+loaddata.sql
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/plantsale~subversion/!svn/ver/3/PlantSale/src/loaddata.sql
+END
+plantsale.conf
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/plantsale~subversion/!svn/ver/23/PlantSale/src/plantsale.conf
+END
+sginput.txt
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/plantsale~subversion/!svn/ver/3/PlantSale/src/sginput.txt
+END
+env.cgi
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/plantsale~subversion/!svn/ver/3/PlantSale/src/env.cgi
+END
+README.txt
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/plantsale~subversion/!svn/ver/41/PlantSale/src/README.txt
+END
+custinput.txt
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/plantsale~subversion/!svn/ver/3/PlantSale/src/custinput.txt
+END
+mkbackup.cgi
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/plantsale~subversion/!svn/ver/3/PlantSale/src/mkbackup.cgi
+END

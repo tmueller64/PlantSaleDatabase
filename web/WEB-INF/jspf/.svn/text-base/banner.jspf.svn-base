@@ -1,0 +1,33 @@
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%> 
+<%@taglib prefix="psstags" tagdir="/WEB-INF/tags" %> 
+<psstags:accesscheck/>
+<div style="background-color: rgb(0, 102, 0); width: 100%;" >
+<table width=100%>
+<tr>
+<td width="72px" rowspan="2"><img src="images/flwrpotsgr.gif" width="72" height="63"> </td>
+<td><div class="headerMessage">Plant Sale System</div></td>
+<td align=right>
+<form method=POST action="index.jsp" style="left: -50px; position: relative">
+<input type=submit name="logout" value="Logout"/>
+</form>
+</td>
+</tr>
+<td colspan="2"><span class="textfieldlabel2">Username: ${username}</span></td>
+</tr>
+</table>
+</div>
+<div id="bannerbar" style="background-color: rgb(0, 0, 0); width: 100%"> </div>
+<div  id="waitScreen" style="background-color: rgb(0, 102, 0);border : 1px solid #765;width:100%;position:absolute;top:0px;visibility:hidden; height: 700px;">
+<span style="width: 100%">
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tr><td height="150">&nbsp;</td></tr>
+<tr>
+  <td valign="middle" align="center">
+  <img name="waiting" src="images/flwrpotgrow1.gif"><br>
+<span class="header2Message">Please wait while the report is generated...</span>
+</td>
+</tr>
+<tr><td height="700">&nbsp;</td></tr>
+</table>
+</span>
+</div>

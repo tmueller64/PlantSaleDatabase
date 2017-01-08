@@ -1,0 +1,14 @@
+<cloudbees-web-app xmlns="http://www.cloudbees.com/xml/webapp/1">
+
+ 
+  <!-- DataSources (use names refererenced via <resource-ref> in WEB-INF/web.xml) -->
+<resource name="jdbc/plantsale" auth="Container" type="javax.sql.DataSource">
+ <param name="username" value="plantsaledb" />
+ <param name="password" value="monkeybutt" />
+ <param name="url" value="jdbc:cloudbees://plantsaledb" />
+</resource>
+
+</cloudbees-web-app>
+
+
+

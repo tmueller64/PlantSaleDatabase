@@ -1,0 +1,92 @@
+.dojoDataTableMgn {
+    margin: 0px 10px
+}
+table.dojoDataTable {
+    background-color: #BEC7CC;
+    color: #333;
+    width: 100%;
+    padding: 6px;
+    border-right: none;
+    border-bottom: none;
+    empty-cells: show
+}
+
+.dojoDataTableTtlTxt {
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 14px;
+    background-image: url(gradtblttl.jpg);
+    background-repeat: repeat-x;
+    background-color: #71838D;
+    text-align: left;
+    color: #fff;
+    padding: 3px 10px;
+    border-top: solid 1px #71838D;
+    border-left: solid 1px #71838D;
+    border-right: solid 1px #71838D;
+    -moz-border-radius-topleft: 8px;
+    -moz-border-radius-topright: 8px;
+    background-position: 3px 3px;
+}
+
+table.dojoDataTable td.dojoDataTableActTd {
+    border-right: none;
+    border-bottom: none;
+    background-color: #BEC7CC;
+    padding: 0px 0px 6px 0px;
+    vertical-align: middle
+} 
+
+table.dojoDataTable th.dojoDataTableColHdrSel {
+    text-align: center;
+    background-image: url(gradtblhdr.gif);
+    background-repeat: repeat-x;
+    background-color: #fff;
+    background-position: left bottom;
+    border-right: 1px solid #d2d3d8;
+    border-top: 1px solid #959aa5;
+    border-left: 1px solid #959aa5;
+    border-bottom: solid 1px #828da4;
+    padding: 2px 5px 0px
+}
+
+table.dojoDataTable th.dojoDataTableColHdr {
+    font-family: sans-serif;
+    font-size: 12pt;
+    text-align: left;
+    vertical-align: bottom;
+    padding: 0px;
+    border-top: 1px solid #81939B;
+    border-right: 1px solid #81939B;
+    border-bottom: 1px solid #81939B;
+    background-color: #fff
+}
+
+table.dojoDataTable td.dojoDataTableTdSel {
+    text-align: center;
+    vertical-align: top;
+    border-left: 1px solid #81939B;
+    border-right: 1px solid #81939B;
+    border-bottom: 1px solid #81939B;
+    background-color: #fff;
+    padding: 0px
+}
+
+table.dojoDataTable td.dojoDataTableTd {
+    font-family: sans-serif;
+    font-size: 10pt;
+    background-color: #E9EBEC;
+    border-top: 1px solid #81939B;
+    border-right: 1px solid #81939B;
+    border-bottom: 1px solid #81939B;
+}
+
+a.dojoDataTableNavLnk:link, a.dojoDataTableNavLnk:visited {
+    color: #003399;
+    text-decoration: none
+}
+
+a.dojoDataTableNavLnk:hover {
+    color: #003399;
+    text-decoration: underline
+}

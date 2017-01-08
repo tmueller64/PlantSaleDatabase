@@ -1,0 +1,16 @@
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%> 
+<%@taglib prefix="psstags" tagdir="/WEB-INF/tags" %> 
+<psstags:accesscheck/>
+<div style="width: 100%;" >
+<table width=100%>
+<tr>
+<td width="72px" rowspan="2"><img src="images/flwrpotsgr.gif" width="72" height="63"> </td>
+<td><div style="color: black" class="headerMessage">Plant Sale System</div></td>
+<td align=right>
+</td>
+</tr>
+<td colspan="2"><span class="textfieldlabel2">Username: ${username}</span></td>
+</tr>
+</table>
+</div>
+<div style="background-color: rgb(0, 0, 0); height: 24px; width: 100%"> </div>

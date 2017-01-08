@@ -1,0 +1,31 @@
+<div class="dojoDataTableMgn">
+<form name="DataTable" method="post" action="#">
+<table class="dojoDataTable" dojoAttachPoint="table" width="100%" border="0" cellpadding="0" cellspacing="0" title="" summary="Data Table" id="DataTableTbl">
+<caption class="dojoDataTableTtlTxt" dojoAttachPoint="title">Organizations&#160;(3 Items)</caption>
+<tr>
+<td class="dojoDataTableActTd" colspan="3" nowrap="nowrap">
+<input name="ButtonAdd" type="submit" class="dojoDataTableBtn1" value="New..." dojoAttachEvent="onClick: buttonNew;" onmouseover="javascript: if (this.disabled==0) this.className='dojoDataTableBtn1Hov'" onfocus="javascript: if (this.disabled==0) this.className='dojoDataTableBtn1Hov'" />
+<input name="ButtonDelete" type="submit" class="dojoDataTableBtn1Dis" value="Delete" dojoAttachEvent="onClick: buttonDelete;" disabled="disabled" onmouseover="javascript: if (this.disabled==0) this.className='dojoDataTableBtn1Hov'" onfocus="javascript: if (this.disabled==0) this.className='dojoDataTableBtn1Hov'" />
+</td>
+</tr>
+
+<tr dojoAttachPoint="headings">
+<th class="dojoDataTableColHdrSel" width="3%" align="center" nowrap="nowrap" scope="col">
+<a href="#" name="SelectAllHref" title="Select Items Currently Displayed" onclick="javascript:var f=document.DataTable;for (i=0; i<f.elements.length; i++) {var e=f.elements[i];if (e.name && e.name.indexOf('DataTable.SelectionCheckbox') != -1) e.checked=true;}toggleTblButtonState('DataTable', 'DataTableTbl', 'tblButton', 'ButtonDelete', this);return false;javascript:var f=document.DataTable;if (f != null) {f.action=this.href;f.submit();return false}"><img name="SelectAllImage" src="check_all.gif" alt="Select Items Currently Displayed" align="top" border="0" height="13" width="15" /></a>
+<a href="#" name="DeselectAllHref" title="Deselect Items Currently Displayed" onclick="javascript:var f=document.DataTable;for (i=0; i<f.elements.length; i++) {var e=f.elements[i];if (e.name && e.name.indexOf('DataTable.SelectionCheckbox') != -1) e.checked=false;}toggleTblButtonState('DataTable', 'DataTableTbl', 'tblButton', 'ButtonDelete', this);return false;javascript:var f=document.DataTable;if (f != null) {f.action=this.href;f.submit();return false}"><img name="DeselectAllImage" src="uncheck_all.gif" alt="Deselect Items Currently Displayed" align="top" border="0" height="13" width="15" /></a>
+</tr>
+
+
+</table>
+</form>
+</div>
+
+
+
+
+
+
+
+
+
+
