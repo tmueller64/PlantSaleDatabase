@@ -46,8 +46,8 @@ dojo.io.repubsubTranport = new function(){
 		if(!rps.topics[kwArgs.url]){
 			kwArgs.rpsLoad = function(evt){
 				kwArgs.load("load", evt);
-			}
-			rps.subscribe = function(kwArgs.url, kwArgs, "rpsLoad");
+			};
+			rps.subscribe(kwArgs.url, kwArgs, "rpsLoad");
 		}
 
 		if(kwArgs["content"]){

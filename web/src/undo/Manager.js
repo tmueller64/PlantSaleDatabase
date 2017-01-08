@@ -47,7 +47,7 @@ dojo.undo.Manager.prototype = {
 	groupingLevel: 0,
 
 //Disabling undo
-	disableUndoRegistration = function () {
+	disableUndoRegistration: function () {
 		this.isUndoRegistrationEnabled = false;
 		this._undoRegistrationLevel--;
 	},

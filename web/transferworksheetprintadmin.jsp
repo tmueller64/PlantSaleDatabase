@@ -48,7 +48,7 @@
                             <td style="white-space: nowrap">${p.num}. ${p.pname}</td>
                             <td style="text-align: right; white-space: nowrap">${p.amt}</td>
                             <td style="white-space: nowrap">${p.oname} - ${p.sname}</td>
-                            <td style="white-space: nowrap, width: 150px"></td>
+                            <td style="white-space: nowrap; width: 150px"></td>
                         </tr>
                     </c:forEach>
                 </c:if>
@@ -78,7 +78,7 @@
                             <td style="white-space: nowrap">${p.num}. ${p.pname}</td>
                             <td style="text-align: right; white-space: nowrap">${p.amt}</td>
                             <td style="white-space: nowrap">${p.oname} - ${p.sname}</td>
-                            <td style="white-space: nowrap, width: 150px"></td>
+                            <td style="white-space: nowrap; width: 150px"></td>
                         </tr>
                     </c:forEach>
                 </c:if>
