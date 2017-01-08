@@ -9,19 +9,12 @@ then run mysql as:
 mysql -u plantsale -p plantsale 
 (password is "plantsale")
 
-Deployment Details for petalsofmercy.com/PlantSale:
-- the com/lowagie/text/pdf/fonts directory from the itext JAR file must be extracted into WEB-INF/classes to avoid a write permission violation
-
 
 NetBeans Application Server:
 Admin username: admin
 Admin password: adminadmin
 Admin console running on port 4848
 
-TODO List
-- need to prevent supplied product from being added twice to a supplier.
-- provide table searching
-- add ability to send email from the program
 
 Troubleshooting Tips:
 
