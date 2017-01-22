@@ -122,7 +122,7 @@
     columns="sale.name,salestart,saleend,activesaleID=sale.id"
     itemeditpage="saleedit.jsp"
     limitdeletetable="custorder" limitdeletetablekey="saleID" limitdeletekey="id"
-    extradeletesql="DELETE FROM saleproduct WHERE saleID = ?;"/>
+    extradeletesql="DELETE FROM saleproduct WHERE saleID = ?"/>
     <p class="instructions">
     Note: a sale cannot be deleted until all orders for the sale have been deleted.
     </p>

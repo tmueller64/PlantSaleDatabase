@@ -64,7 +64,7 @@
     columns="expecteddeliverydate,deladdress,delcity"
     itemnewpage="supplierordernewadmin.jsp"
     itemeditpage="supplierordereditadmin.jsp"
-    extradeletesql="UPDATE saleproductorder SET supplierorderID = 0 WHERE supplierorderID = ?;"
+    extradeletesql="UPDATE saleproductorder SET supplierorderID = 0 WHERE supplierorderID = ?"
     itemactionlabel="Print">
     <jsp:attribute name="itemactionfrag">
       <c:url var="orderurl" value="supplierorderprintadmin.jsp">

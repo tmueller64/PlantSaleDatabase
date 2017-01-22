@@ -59,7 +59,14 @@ These are the orders that have been entered for this customer.
     columns="orderdate,concat(seller.lastname,', ',seller.firstname),sum(custorderitem.quantity * saleproduct.unitprice)"
     itemeditpage="editorder.jsp"
     itemnewpage="enterorder.jsp"
-    extradeletesql="DELETE FROM custorderitem WHERE orderID = ?;"/>
+    extradeletesql="UPDATE product INNER JOIN
+                     (SELECT product.id, quantity FROM product, custorderitem, saleproduct
+                        WHERE orderId = ? AND saleproductID = saleproduct.id AND 
+                              product.num = saleproduct.num AND
+                              product.remaininginventory >= 0)
+                      AS orditem ON product.id = orditem.id
+                    SET remaininginventory = remaininginventory + orditem.quantity;
+                 DELETE FROM custorderitem WHERE orderID = ?"/>
 </psstags:tab>
 
 </psstags:tabset>

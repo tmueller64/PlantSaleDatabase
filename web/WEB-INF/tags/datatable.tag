@@ -18,7 +18,7 @@
 <%@attribute name="itemactionfrag" fragment="true" description="Fragment used to generate action column content."%>
 <%@attribute name="itemactionlabel" description="Label on button used for the action column"%>
 <%@attribute name="itemactioncol" description="True if the first column is used for the action column"%>
-<%@attribute name="extradeletesql" description="SQL statement executed before each delete. One parameter, the record id, is passed to the statement."%>
+<%@attribute name="extradeletesql" description="SQL statement(s) executed before each delete. Statements are delimited with ';'. One parameter, the record id, is passed to each statement."%>
 <%@attribute name="limitdeletetable"%>
 <%@attribute name="limitdeletetablekey"%>
 <%@attribute name="limitdeletekey" description="Field in table to be compared with limitdeletetable.limitdeletetablekey."%>
@@ -51,9 +51,11 @@
 <c:if test="${! empty param.ButtonDelete}">
   <c:forEach var="i" items="${paramValues.itemcheckbox}">
     <c:if test="${!empty extradeletesql}">
-      <sql:update var="updateCount" dataSource="${pssdb}" sql="${extradeletesql}">
-        <sql:param value="${i}"/>
-      </sql:update>
+      <c:forTokens var="sql" items="${extradeletesql}" delims=";">
+        <sql:update var="updateCount" dataSource="${pssdb}" sql="${sql}">
+          <sql:param value="${i}"/>
+        </sql:update>
+      </c:forTokens>
     </c:if>
     <sql:update var="updateCount" dataSource="${pssdb}">
     DELETE from ${table} where id = ?;

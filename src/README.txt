@@ -88,6 +88,8 @@ recalculated based on all existing orders in active sales and the supplied inven
 
 The remaining inventory for a product must be recalculated when:
 - a sale becomes active/inactive (recalculate from scratch) - currently manual via Tasks page
-- the recalculate remaining inventory button is pressed (recalculate from scratch) - done
-- the inventory for a supplied product is changed (+/-) - currently manual via Tasks page
-- an order is created or edited (+/-)
+- the recalculate remaining inventory button is pressed (recalculate from scratch)
+- the inventory for a supplied product is changed - currently manual via Tasks page
+- mass delete of users via the admin tasks page - currently manual via Tasks page
+- an order is created or edited 
+- orders are deleted from seller, sale, customer pages
