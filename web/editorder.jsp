@@ -26,55 +26,85 @@
 </c:if>
 
 <c:if test="${! empty param.submit}">
-  <%-- validate date value - throws exception if invalid --%>
-  <fmt:parseDate value="${param.orderdate}" type="date" pattern="yyyy-MM-dd" var="d"/>
+    <%-- validate date value - throws exception if invalid --%>
+    <fmt:parseDate value="${param.orderdate}" type="date" pattern="yyyy-MM-dd" var="d"/>
+    <sql:transaction dataSource="${pssdb}">
+      <sql:query var="r">
+          SELECT sale.id FROM sale,custorder 
+            WHERE salestart <= ? and saleend >= ? and custorder.id = ? and sale.id = custorder.saleID;
+        <sql:param value="${param.orderdate}"/>
+        <sql:param value="${param.orderdate}"/>
+        <sql:param value="${currentOrderId}"/>
+      </sql:query>
+      <c:if test="${r.rowCount < 1}">
+        <c:set var="errormsg" scope="session" value="The entered date is invalid for this order."/>
+        <c:redirect url="${pageContext.request.requestURI}" context="/"/>
+      </c:if>
+            
+      <sql:update var="s">
+        CREATE TABLE temp${tid}_updateorder ( saleproductID INTEGER, quantity INTEGER );
+      </sql:update>
+        
+      <%-- add the products from this order back to the inventory --%>
+      <sql:update var="returnInv">
+          INSERT temp${tid}_updateorder (saleproductID, quantity)
+            SELECT saleproductID, -quantity FROM custorderitem
+                WHERE orderID = ?
+          <sql:param value="${currentOrderId}"/>
+      </sql:update>  
+      
+      <%-- subtract the updates quantities from the inventory --%>
+      <c:set var="id" value=""/>
+      <c:forTokens var="i" items="${param.items}" delims=":">
+        <c:choose>
+          <c:when test="${empty id}"><c:set var="id" value="${i}"/></c:when>
+          <c:otherwise>
+            <sql:update var="updateCount">
+             INSERT INTO temp${tid}_updateorder (saleproductID, quantity)
+                    VALUES (?, ?);
+              <sql:param value="${id}"/>
+              <sql:param value="${i}"/>
+            </sql:update>   
+            <c:set var="id" value=""/>
+          </c:otherwise>
+        </c:choose>
+      </c:forTokens>
+      
+      <c:set var="orderid" value="${currentOrderId}"/>
+      <%@include file="/WEB-INF/jspf/checkandupdateinv.jspf"%>
+      
+      <c:if test="${empty errormsg}">
+        <sql:update var="updateCount">
+          UPDATE custorder SET sellerID = ?, orderdate = ?, specialrequest = ?, donation = ?, doublechecked = ?
+                 WHERE id = ?;
+           <sql:param value="${param.seller}"/>
+           <sql:param value="${param.orderdate}"/>
+           <sql:param value="${param.srequest}"/>
+           <sql:param value="${!empty param.donation ? param.donation : 0}"/>
+           <sql:param value="${!empty param.doublechecked ? 1 : 0}"/>
+           <sql:param value="${currentOrderId}"/>
+        </sql:update>   
 
-  <sql:query var="r" dataSource="${pssdb}">
-      SELECT sale.id FROM sale,custorder 
-        WHERE salestart <= ? and saleend >= ? and custorder.id = ? and sale.id = custorder.saleID;
-    <sql:param value="${param.orderdate}"/>
-    <sql:param value="${param.orderdate}"/>
-    <sql:param value="${currentOrderId}"/>
-  </sql:query>
-  <c:if test="${r.rowCount < 1}">
-    <c:set var="errormsg" scope="session" value="The entered date is invalid for this order."/>
+        <sql:update var="updateCount">
+            DELETE FROM custorderitem WHERE orderID = ?;
+          <sql:param value="${currentOrderId}"/>
+        </sql:update>
+      
+        <sql:update var="updateCount">
+            INSERT INTO custorderitem (orderID, saleproductID, quantity)
+              SELECT ?, saleproductID, quantity FROM temp${tid}_updateorder
+                  WHERE quantity > 0;
+            <sql:param value="${orderid}"/>
+        </sql:update>                
+      </c:if>
+                  
+      <sql:update var="s">
+            DROP TABLE IF EXISTS temp${tid}_updateorder;
+      </sql:update>   
+            
+    </sql:transaction> 
+    <c:set var="infomsg" scope="session" value='Order ${empty errormsg ? "" : "not"} updated.'/>    
     <c:redirect url="${pageContext.request.requestURI}" context="/"/>
-  </c:if>
-  
-  <sql:update var="updateCount" dataSource="${pssdb}">
-    UPDATE custorder SET sellerID = ?, orderdate = ?, specialrequest = ?, donation = ?, doublechecked = ?
-           WHERE id = ?;
-     <sql:param value="${param.seller}"/>
-     <sql:param value="${param.orderdate}"/>
-     <sql:param value="${param.srequest}"/>
-     <sql:param value="${!empty param.donation ? param.donation : 0}"/>
-     <sql:param value="${!empty param.doublechecked ? 1 : 0}"/>
-     <sql:param value="${currentOrderId}"/>
-  </sql:update>       
-
-  <sql:update var="updateCount" dataSource="${pssdb}">
-      DELETE FROM custorderitem WHERE orderID = ?;
-    <sql:param value="${currentOrderId}"/>
-  </sql:update>
-  <c:set var="id" value=""/>
-  <c:forTokens var="i" items="${param.items}" delims=":">
-    <c:choose>
-      <c:when test="${empty id}"><c:set var="id" value="${i}"/></c:when>
-      <c:otherwise>
-        <sql:update var="updateCount" dataSource="${pssdb}">
-           INSERT INTO custorderitem (orderID, saleproductID, quantity)
-                  VALUES (?, ?, ?);
-            <sql:param value="${currentOrderId}"/>
-            <sql:param value="${id}"/>
-            <sql:param value="${i}"/>
-        </sql:update>  
-        <c:set var="id" value=""/>
-      </c:otherwise>
-    </c:choose>
-  </c:forTokens>
-    
-  <c:set var="infomsg" scope="session" value="Order updated."/>
-  <c:redirect url="${pageContext.request.requestURI}" context="/"/>
 </c:if>
 
 <script>

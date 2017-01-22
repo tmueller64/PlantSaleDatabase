@@ -47,6 +47,7 @@
            </psstags:inputfield>
            <psstags:textfield label="Units per Flat" field="unitsperflat" size="5"/>
            <psstags:textfield label="Cost per Flat" field="costperflat" size="6"/>
+           <psstags:textfield label="Inventory" field="inventory" size="6" note="Enter 0 for no limit; value is in units, not flats."/>
        </psstags:propsform>
    </psstags:tab>
        

@@ -1,0 +1,54 @@
+<%@page import="javax.servlet.jsp.jstl.sql.Result"%>
+<%@page import="java.util.SortedMap"%>
+<%--
+ This tag checks the available product inventory based on the values in the 
+ temp{$tid}_updateorder table and sets errormsg if it
+ is exceeded. If not, it updates the inventory levels for the products in this 
+ order. This tag must be used inside an <sql:transaction> that sets the datasource.
+--%>
+<c:set var="errormsg" scope="session" value=""/>
+<sql:query var="checkInv">
+        SELECT product.id, product.num as num, product.name, product.alternate, sum(quantity) as quantity
+            FROM product, temp${tid}_updateorder, saleproduct
+            WHERE temp${tid}_updateorder.saleproductID = saleproduct.id AND 
+                  product.num = saleproduct.num AND
+                  product.remaininginventory >= 0 AND
+                  product.remaininginventory < quantity
+            GROUP BY temp${tid}_updateorder.saleproductID
+  </sql:query>
+<%
+    Result checkInv = (Result)pageContext.getAttribute("checkInv");
+    if (checkInv.getRowCount() > 0) {
+        StringBuffer msg = new StringBuffer();
+        msg.append("The submitted order exceeds the available inventory for the following product");
+        if (checkInv.getRowCount() > 1) {
+            msg.append("s");
+        }
+        msg.append("\n<br>\n");
+        for (SortedMap row : checkInv.getRows()) {
+            int pnum = (Integer)row.get("num");
+            int alt = (Integer)row.get("alternate");
+            String name = (String)row.get("name");
+            msg.append("<br>" + pnum + ". " + name + ".");
+            if (alt != 0) {
+                msg.append("  Suggested alternate is product " + alt + ".");
+            }
+            msg.append("\n");
+        }
+        msg.append("\n");
+        session.setAttribute("errormsg", msg.toString());
+    }
+%>
+<c:if test="${empty errormsg}">
+    <sql:update var="updateInv">
+        UPDATE product oldproduct
+            INNER JOIN
+              (SELECT product.id, sum(quantity) as quantity from product, temp${tid}_updateorder, saleproduct
+                  WHERE temp${tid}_updateorder.saleproductID = saleproduct.id AND 
+                        product.num = saleproduct.num AND
+                        product.remaininginventory > 0
+                  GROUP BY temp${tid}_updateorder.saleproductID)
+              AS orditem ON oldproduct.id = orditem.id
+            SET oldproduct.remaininginventory = oldproduct.remaininginventory - orditem.quantity;
+    </sql:update>
+</c:if>

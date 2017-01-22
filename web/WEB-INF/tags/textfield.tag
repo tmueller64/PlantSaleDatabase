@@ -3,11 +3,13 @@
 <%@attribute name="label" required="true"%>
 <%@attribute name="field" required="true"%>
 <%@attribute name="size"%>
+<%@attribute name="note"%>
 
 <tr class="textfieldrow" valign="top">
 <td class="textfieldlabel">${label}:</td>
 <td class="textfieldvalue">
-  <input type="text" name="${field}" value="${row[field]}" size="${size}" maxlength="${size}"/>
+  <input type="text" name="${field}" value="${row[field]}" size="${size}" maxlength="${size}"/> 
+  <div class="textfieldnote">${note}</div>
 </td>
 </tr>
 

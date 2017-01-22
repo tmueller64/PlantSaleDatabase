@@ -4,8 +4,28 @@ id INTEGER auto_increment ,
 name VARCHAR(30) NOT NULL default 'New Product Name',
 num INTEGER default '0',
 unitprice NUMERIC(8,2) NOT NULL default '0',
+remaininginventory INTEGER default '-1',
+alternate INTEGER default '0',
 PRIMARY KEY (id), UNIQUE KEY (num)
 );
+
+drop function if exists remainingInventory;
+DELIMITER $$
+CREATE FUNCTION remainingInventory(inventory INTEGER, ordered INTEGER) RETURNS INTEGER
+  DETERMINISTIC
+BEGIN
+  DECLARE rv INTEGER;
+  IF (inventory = 0) THEN
+    SET rv = -1;
+  ELSEIF (ordered > inventory) THEN
+    SET rv = 0;
+  ELSE 
+    SET rv = inventory - ordered;
+  END IF;
+  RETURN (rv);
+END;
+$$
+DELIMITER ;
 
 drop table if exists supplier;
 CREATE TABLE supplier (
@@ -28,6 +48,7 @@ supplierID INTEGER default '0',
 productID INTEGER default '0',
 unitsperflat INTEGER default '0',
 costperflat NUMERIC(8,2) NOT NULL default '0',
+inventory INTEGER default '0',
 PRIMARY KEY (id)
 );
 
@@ -181,7 +202,7 @@ insert into product values (2, "Lillies", 2, 3.00);
 insert into product values (3, "Tree", 3, 10.00);
 insert into supplier values (1, "DeJong", "123 Some Street", "Somecity", "IA", "5xxxx", "xxx-xxx-xxxx", "xxx-xxx-afax", "Some Iowa Guy");
 insert into supplier values (2, "Michigan Westshores", "123 Some Street", "Somecity", "MI", "3xxxx", "xxx-xxx-xxxx", "xxx-xxx-afax", "Some Michigan Guy");
-insert into supplieritem values (1, 1, 1, 6, "6.25");
+insert into supplieritem values (1, 1, 1, 6, "6.25", 0);
 insert into org values (2, "Trinity Lutheran School", "1546 N. Luther Road", "Fremont", "NE", "68025", "402-721-5959", "Jim Knoepfel", 1);
 insert into org values (3, "WOLSA", "156th and Fort", "Omaha", "NE", "6xxxx", "402-xxx-xxxx", "David Mueller", 0);
 insert into user values (2, 1, "a", "jj", "admin");

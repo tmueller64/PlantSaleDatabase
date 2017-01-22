@@ -70,6 +70,7 @@
 <p class="instructions">Tasks<p>
 <ul class="tasklist">
     <li><a href="massdeleteadmin.jsp">Mass Delete of Old Data</li>
+    <li><a href="recalculateinventoryadmin.jsp">Recalculate Remaining Product Inventory</li>
     <li><a href="/cgi/mkbackup.cgi">Make Backup</a></li>
 </ul>
 </psstags:tab>

@@ -1,5 +1,7 @@
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
+<%@page import="javax.servlet.jsp.jstl.sql.Result"%>
+<%@page import="java.util.SortedMap"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%> 
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -84,77 +86,94 @@ function MicrosoftEventHandler_KeyDown() {
     <c:set var="errormsg" scope="session" value="The entered date is invalid for the ${sale.name}."/>
     <c:redirect url="${pageContext.request.requestURI}" context="/"/>
   </c:if>
-  
- <sql:transaction dataSource="${pssdb}"> 
-  <c:choose>
-    <c:when test="${empty param.custid}">
-      <sql:update var="updateCount">
-        INSERT INTO customer (orgID, firstname, lastname, address, city, state, postalcode, phonenumber, email, phonenumber2)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
-        <sql:param value="${currentOrgId}"/>
-        <sql:param value="${param.firstname}"/>
-        <sql:param value="${param.lastname}"/>
-        <sql:param value="${param.address}"/>
-        <sql:param value="${param.city}"/>
-        <sql:param value="${param.state}"/>
-        <sql:param value="${param.zip}"/>
-        <sql:param value="${param.areacode}${param.phone}"/>
-        <sql:param value="${param.email}"/>
-        <sql:param value="${param.phonenumber2}"/>
-      </sql:update>
-      <sql:query var="r" sql="select max(id) from customer;"/>
-      <c:set var="custid" value="${r.rowsByIndex[0][0]}"/>
-    </c:when>
-    <c:otherwise>
-      <sql:update var="updateCount">
-        UPDATE customer SET firstname=?, lastname=?, address=?, city=?, state=?, postalcode=?, phonenumber=?, email=?, phonenumber2=?
-               WHERE id = ?;
-        <sql:param value="${param.firstname}"/>
-        <sql:param value="${param.lastname}"/>
-        <sql:param value="${param.address}"/>
-        <sql:param value="${param.city}"/>
-        <sql:param value="${param.state}"/>
-        <sql:param value="${param.zip}"/>
-        <sql:param value="${param.areacode}${param.phone}"/>
-        <sql:param value="${param.email}"/>
-        <sql:param value="${param.phonenumber2}"/>
-        <sql:param value="${param.custid}"/>
-      </sql:update>
-      <c:set var="custid" value="${param.custid}"/>
-    </c:otherwise>
-  </c:choose>
-  
-  <sql:update var="updateCount">
-    INSERT INTO custorder (customerID, sellerID, saleID, orderdate, specialrequest, donation)
-           VALUES (?, ?, ?, ?, ?, ?);
-     <sql:param value="${custid}"/>
-     <sql:param value="${param.seller}"/>
-     <sql:param value="${currentSaleId}"/>
-     <sql:param value="${param.orderdate}"/>
-     <sql:param value="${param.srequest}"/>
-     <sql:param value="${!empty param.donation ? param.donation : 0}"/>
-  </sql:update>       
-  <sql:query var="r" sql="select max(id) from custorder;"/>
-  <c:set var="orderid" value="${r.rowsByIndex[0][0]}"/>
 
-  <c:set var="id" value=""/>
-  <c:forTokens var="i" items="${param.items}" delims=":">
-    <c:choose>
-      <c:when test="${empty id}"><c:set var="id" value="${i}"/></c:when>
-      <c:otherwise>
+  <sql:transaction dataSource="${pssdb}">   
+     
+    <sql:update var="s">
+        CREATE TABLE temp${tid}_updateorder ( saleproductID INTEGER, quantity INTEGER );
+    </sql:update>
+    <c:set var="id" value=""/>
+    <c:forTokens var="i" items="${param.items}" delims=":">
+      <c:choose>
+        <c:when test="${empty id}"><c:set var="id" value="${i}"/></c:when>
+        <c:otherwise>
+          <sql:update var="updateCount">
+             INSERT INTO temp${tid}_updateorder (saleproductID, quantity)
+                    VALUES (?, ?);
+              <sql:param value="${id}"/>
+              <sql:param value="${i}"/>
+          </sql:update>  
+          <c:set var="id" value=""/>
+        </c:otherwise>
+      </c:choose>
+    </c:forTokens>
+    <%@include file="/WEB-INF/jspf/checkandupdateinv.jspf"%>   
+    
+    <c:if test="${empty errormsg}">
+        <%-- proceed with entering the order --%>
+        <c:choose>
+          <c:when test="${empty param.custid}">
+            <sql:update var="updateCount">
+              INSERT INTO customer (orgID, firstname, lastname, address, city, state, postalcode, phonenumber, email, phonenumber2)
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+              <sql:param value="${currentOrgId}"/>
+              <sql:param value="${param.firstname}"/>
+              <sql:param value="${param.lastname}"/>
+              <sql:param value="${param.address}"/>
+              <sql:param value="${param.city}"/>
+              <sql:param value="${param.state}"/>
+              <sql:param value="${param.zip}"/>
+              <sql:param value="${param.areacode}${param.phone}"/>
+              <sql:param value="${param.email}"/>
+              <sql:param value="${param.phonenumber2}"/>
+            </sql:update>
+            <sql:query var="r" sql="select max(id) from customer;"/>
+            <c:set var="custid" value="${r.rowsByIndex[0][0]}"/>
+          </c:when>
+          <c:otherwise>
+            <sql:update var="updateCount">
+              UPDATE customer SET firstname=?, lastname=?, address=?, city=?, state=?, postalcode=?, phonenumber=?, email=?, phonenumber2=?
+                     WHERE id = ?;
+              <sql:param value="${param.firstname}"/>
+              <sql:param value="${param.lastname}"/>
+              <sql:param value="${param.address}"/>
+              <sql:param value="${param.city}"/>
+              <sql:param value="${param.state}"/>
+              <sql:param value="${param.zip}"/>
+              <sql:param value="${param.areacode}${param.phone}"/>
+              <sql:param value="${param.email}"/>
+              <sql:param value="${param.phonenumber2}"/>
+              <sql:param value="${param.custid}"/>
+            </sql:update>
+            <c:set var="custid" value="${param.custid}"/>
+          </c:otherwise>
+        </c:choose>
+
         <sql:update var="updateCount">
-           INSERT INTO custorderitem (orderID, saleproductID, quantity)
-                  VALUES (?, ?, ?);
+          INSERT INTO custorder (customerID, sellerID, saleID, orderdate, specialrequest, donation)
+                 VALUES (?, ?, ?, ?, ?, ?);
+           <sql:param value="${custid}"/>
+           <sql:param value="${param.seller}"/>
+           <sql:param value="${currentSaleId}"/>
+           <sql:param value="${param.orderdate}"/>
+           <sql:param value="${param.srequest}"/>
+           <sql:param value="${!empty param.donation ? param.donation : 0}"/>
+        </sql:update>       
+        <sql:query var="r" sql="select max(id) from custorder;"/>
+        <c:set var="orderid" value="${r.rowsByIndex[0][0]}"/>
+
+        <sql:update var="updateCount">
+            INSERT INTO custorderitem (orderID, saleproductID, quantity)
+              SELECT ?, saleproductID, quantity FROM temp${tid}_updateorder;
             <sql:param value="${orderid}"/>
-            <sql:param value="${id}"/>
-            <sql:param value="${i}"/>
         </sql:update>  
-        <c:set var="id" value=""/>
-      </c:otherwise>
-    </c:choose>
-  </c:forTokens>
- </sql:transaction>  
-  <c:set var="infomsg" scope="session" value="Order entered."/>
+     </c:if> 
+              
+     <sql:update var="s">
+            DROP TABLE IF EXISTS temp${tid}_updateorder;
+     </sql:update>                
+  </sql:transaction>  
+  <c:set var="infomsg" scope="session" value='Order ${empty errormsg ? "" : "not"} entered.'/>               
   <c:redirect url="${pageContext.request.requestURI}" context="/"/>
 </c:if>
 

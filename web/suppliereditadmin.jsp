@@ -50,8 +50,8 @@
     filter=",product WHERE supplierID = ${currentSupplierId} and productID = product.id"
     order="ORDER by product.num"
     initialValues="(supplierID) VALUES (${currentSupplierId})"
-    columnNames="Name,Number,Units Per Flat,Cost Per Flat"
-    columns="product.name,product.num,unitsperflat,costperflat"
+    columnNames="Name,Number,Units Per Flat,Cost Per Flat,Inventory"
+    columns="product.name,product.num,unitsperflat,costperflat,inventory"
     itemeditpage="supplieritemeditadmin.jsp"/>
   </psstags:tab>
 <psstags:tab name="Orders & Deliveries">

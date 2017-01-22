@@ -60,14 +60,14 @@ h2 {
    margin-left: 40px;
    margin-top: 20px;
    margin-bottom: 10px;
+   border : 1px solid #765;
 }
 
 .errorMessage span {
    color: red;
    font-family: Arial,Helvetica,sans-serif;
    font-weight: bold;
-   border : 1px solid #765;
-   background : url(images/stop.gif) no-repeat 4px 2px;
+   background : url(images/stop.gif) no-repeat 2px 4px;
    padding: 4px 4px 4px 30px;
 }
 
@@ -132,6 +132,16 @@ h2 {
 
 .textfieldvalue {
     padding: 4px;
+}
+
+.textfieldvalue2 {
+    padding: 4px;
+    text-align: right;
+}
+
+.textfieldnote {
+    font-style: italic;
+    font-size: smaller;
 }
 
 .tasklist {
