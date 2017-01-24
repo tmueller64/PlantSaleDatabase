@@ -93,17 +93,11 @@
                         <sql:param value="${currentSupplierId}"/>
                     </sql:query>
                     
-                    <select name="saleIDs" multiple size="5">
-                        <c:forEach var="s" items="${sq.rowsByIndex}">
-                            <option value="${s[2]}" <c:if test="${s[3] != 0}">selected="true"</c:if>>${s[0]} - ${s[1]}</option>
-                        </c:forEach>
-                    </select>
+                    <c:forEach var="s" items="${sq.rowsByIndex}">
+                        <input type="checkbox" name="saleIDs" value="${s[2]}" <c:if test="${s[3] != 0}">checked</c:if>>${s[0]} - ${s[1]}<br>
+                    </c:forEach>
                 </psstags:inputfield>
-                <tr><td colspan="2">
-                    <p class="instructions">
-                        Select multiple sales by pressing "Ctrl" while selecting with the left mouse button.
-                    </p>
-                </td></tr>
+                
                 <tr>
                     <td colspan=2>
                         <input type="submit" name="save" value="Save" style="position: relative; left: 30px;">

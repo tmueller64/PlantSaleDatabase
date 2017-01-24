@@ -77,7 +77,7 @@ and only 3 are available and will also report what alternative product an be sel
 If the available inventory for the alternative is also 0, then it's alternative will 
 be suggested (if non-zero), and so on. 
 
-The remaining inventory number for each product will be recalculated every time 
+The remaining inventory number for each product will be recalculated every time
 an order or inventory is edited and will be stored in the database. This will 
 prevent having to examine every order every time an order is entered. However, 
 if there is some problem with the software or the database is updated manually, 
