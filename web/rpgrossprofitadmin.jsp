@@ -18,9 +18,9 @@
 <sql:transaction dataSource="${pssdb}">
     <sql:query var="r">
         SELECT org.name as oname, sale.name as sname, 
-        SUM((ifnull(unitsdelivered,0) + ifnull(trincount,0) - ifnull(troutcount,0)) * saleproduct.unitprice * (1 - sale.profit)) as due,
+        SUM((ifnull(unitsdelivered,0) + ifnull(trincount,0) - ifnull(troutcount,0)) * saleproduct.unitprice * (1 - saleproduct.profit)) as due,
         SUM(cogs) as cogs,
-        SUM((ifnull(unitsdelivered,0) + ifnull(trincount,0) - ifnull(troutcount,0)) * saleproduct.unitprice * (1 - sale.profit) - cogs) as gprofit
+        SUM((ifnull(unitsdelivered,0) + ifnull(trincount,0) - ifnull(troutcount,0)) * saleproduct.unitprice * (1 - saleproduct.profit) - cogs) as gprofit
         FROM saleproduct
         INNER JOIN sale ON sale.id = saleproduct.saleID
         INNER JOIN org ON org.activesaleID = sale.id
@@ -77,9 +77,9 @@
 </tr>
 </c:forEach>
    <sql:query var="r">
-        SELECT SUM((ifnull(unitsdelivered,0) + ifnull(trincount,0) - ifnull(troutcount,0)) * saleproduct.unitprice * (1 - sale.profit)) as due,
+        SELECT SUM((ifnull(unitsdelivered,0) + ifnull(trincount,0) - ifnull(troutcount,0)) * saleproduct.unitprice * (1 - saleproduct.profit)) as due,
                SUM(cogs) as cogs,
-               SUM((ifnull(unitsdelivered,0) + ifnull(trincount,0) - ifnull(troutcount,0)) * saleproduct.unitprice * (1 - sale.profit) - cogs) as gprofit
+               SUM((ifnull(unitsdelivered,0) + ifnull(trincount,0) - ifnull(troutcount,0)) * saleproduct.unitprice * (1 - saleproduct.profit) - cogs) as gprofit
         FROM saleproduct
         INNER JOIN sale ON sale.id = saleproduct.saleID
         INNER JOIN org ON org.activesaleID = sale.id

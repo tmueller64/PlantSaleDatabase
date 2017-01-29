@@ -62,7 +62,7 @@ ${bt.city}, ${bt.state}  ${bt.postalcode}<br>
             saleproduct.unitprice as price,
             custorder.unitsordered as preordered,
             @totaldel:=ifnull(unitsdelivered,0) + ifnull(trincount,0) - ifnull(troutcount,0) as totaldel,
-            @totaldel * saleproduct.unitprice * (1 - sale.profit) as due
+            @totaldel * saleproduct.unitprice * (1 - saleproduct.profit) as due
             FROM saleproduct
             INNER JOIN sale ON sale.id = saleproduct.saleID
             LEFT JOIN (SELECT saleproduct.id AS id, sum(custorderitem.quantity) AS unitsordered FROM saleproduct, custorderitem
@@ -123,7 +123,7 @@ ${bt.city}, ${bt.state}  ${bt.postalcode}<br>
 </div>
     <br>
     <sql:query var="r">
-        SELECT SUM((ifnull(unitsdelivered,0) + ifnull(trincount,0) - ifnull(troutcount,0)) * saleproduct.unitprice * (1 - sale.profit)) as due
+        SELECT SUM((ifnull(unitsdelivered,0) + ifnull(trincount,0) - ifnull(troutcount,0)) * saleproduct.unitprice * (1 - saleproduct.profit)) as due
         FROM saleproduct
         INNER JOIN sale ON sale.id = saleproduct.saleID
         LEFT JOIN (SELECT saleproduct.id AS id, SUM(flatsdelivered * unitsperflat) AS unitsdelivered
