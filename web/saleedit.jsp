@@ -128,29 +128,39 @@ These are the orders that have been entered for this sale.
     <sql:transaction dataSource="${pssdb}">
     <c:forEach var="p" items="${paramValues.delete_row}">
         <sql:update var="updateStatus">
-            DELETE FROM saleproduct WHERE num = ? and saleID = ?;
+            DELETE FROM saleproduct WHERE id = ? and saleID = ?;
           <sql:param value="${p}"/>
           <sql:param value="${currentSaleId}"/>
         </sql:update>
     </c:forEach>
     <c:forEach var="p" items="${paramValues.insert_row}">
+        <c:set var="profitVar" value="profit_add_${p}"/>
         <sql:update var="updateStatus">
-            INSERT INTO saleproduct (saleID, name, num, unitprice) 
-                SELECT ?, name, num, unitprice FROM product WHERE num = ?;
+            INSERT INTO saleproduct (saleID, name, num, unitprice, profit) 
+                SELECT ?, name, num, unitprice, ? FROM product WHERE num = ?;
           <sql:param value="${currentSaleId}"/>
+          <sql:param value="${param[profitVar]}"/>
           <sql:param value="${p}"/> 
         </sql:update>
     </c:forEach>
     <c:forEach var="p" items="${paramValues.update_row}">
-        <sql:query var="r" sql="SELECT name,unitprice FROM product WHERE num = ${p}"/>
         <sql:update var="updateStatus">
-            UPDATE saleproduct SET name = ?, unitprice = ?
-                WHERE num = ? and saleID = ?;
-          <sql:param value="${r.rows[0].name}"/>
-          <sql:param value="${r.rows[0].unitprice}"/>
+            UPDATE saleproduct 
+                INNER JOIN product ON saleproduct.num = product.num
+                SET saleproduct.name = product.name, saleproduct.unitprice = product.unitprice
+                WHERE saleproduct.id = ? AND saleID = ?;
           <sql:param value="${p}"/>
           <sql:param value="${currentSaleId}"/>
         </sql:update> 
+    </c:forEach>
+    <c:forEach var="p" items="${paramValues.update_profit}">
+        <c:set var="profitVar" value="profit_update_${p}"/>
+        <sql:update var="updateStatus">
+            UPDATE saleproduct SET profit = ? WHERE id = ? AND saleID = ?;
+          <sql:param value="${param[profitVar]}"/>
+          <sql:param value="${p}"/>
+          <sql:param value="${currentSaleId}"/>
+        </sql:update>     
     </c:forEach>
     </sql:transaction>
     <c:set var="infomsg" scope="session" value="Save completed."/>
@@ -164,12 +174,19 @@ function setState(a, b)
     if (c1.checked) c2.disabled = false;
     else c2.disabled = true;
 }
-function setHidden(a, b)
+function setHidden(a, b, v)
 {
     c1 = document.getElementById(a);
     c2 = document.getElementById(b);
     if (c1.checked) c2.value = "";
-    else c2.value = c1.value;
+    else c2.value = v;
+}
+
+function setVisible(a, b)
+{
+    c1 = document.getElementById(a);
+    c2 = document.getElementById(b);
+    c1.style.visibility = c2.checked ? "visible" : "hidden";
 }
 
 </script>
@@ -196,7 +213,9 @@ After checking the boxes as desired, click the Save button to save the changes.
 <a href="#" name="SelectAllHref" title="Select Items Currently Displayed" onclick="javascript:var f=document.productform;for (i=0; i<f.elements.length; i++) {var e=f.elements[i];if (e.name && (e.name == 'insert_row' || e.name == 'delete_row_shown') && !e.disabled) e.checked=true;};return false;"><img name="SelectAllImage" src="images/check_all.gif" alt="Select Items Currently Displayed" align="top" border="0" height="13" width="15" /></a>
 <a href="#" name="DeselectAllHref" title="Deselect Items Currently Displayed" onclick="javascript:var f=document.productform;for (i=0; i<f.elements.length; i++) {var e=f.elements[i];if (e.name && (e.name == 'insert_row' || e.name == 'delete_row_shown')) e.checked=false;};return false;"><img name="DeselectAllImage" src="images/uncheck_all.gif" alt="Deselect Items Currently Displayed" align="top" border="0" height="13" width="15" /></a>
 </th>
-<th style="text-align: left" class="pssTblColHdr" colspan="0">Product</th>
+<th style="text-align: left" class="pssTblColHdr" colspan="2">Product</th>
+<th style="text-align: center" class="pssTblColHdr">Profit</th>
+<th colspan="0"></th>
 </tr>
 <sql:transaction dataSource="${pssdb}">
     <sql:query var="product">
@@ -207,14 +226,18 @@ After checking the boxes as desired, click the Save button to save the changes.
         salename,
         saleprice,
         saleprodid,
-        count(orderID) as ordercount
+        count(orderID) as ordercount,
+        profit 
         FROM product 
-        LEFT JOIN (SELECT id AS saleprodid, name AS salename, num, unitprice AS saleprice 
+        LEFT JOIN (SELECT id AS saleprodid, name AS salename, num, unitprice AS saleprice, profit
           FROM saleproduct WHERE saleID = ${currentSaleId}) AS sp
           ON product.num = sp.num
         LEFT JOIN custorderitem ON sp.saleprodid = custorderitem.saleproductID 
         GROUP BY product.id 
         ORDER BY product.num;
+    </sql:query>
+    <sql:query var="sale">
+        SELECT profit FROM sale where id = ${currentSaleId};
     </sql:query>
 </sql:transaction>
 
@@ -229,13 +252,18 @@ After checking the boxes as desired, click the Save button to save the changes.
       <c:set var="checked">checked="true"</c:set>
       <c:set var="cboxname" value="delete_row_shown"/>
       <c:set var="cboxdel"><input type="hidden" id="delete_${p.num}_hidden" name="delete_row" value=""></c:set>
-      <c:set var="change1">setHidden('checkbox_${p.num}', 'delete_${p.num}_hidden');</c:set>
+      <c:set var="change1">setHidden('checkbox_${p.num}', 'delete_${p.num}_hidden', '${p.saleprodid}');</c:set>
       <c:if test="${p.prodname != p.salename || p.prodprice != p.saleprice}">
         <c:set var="change2">setState('checkbox_${p.num}', 'update_${p.num}');</c:set>
         <c:set var="changebox">
-          <td><input type="checkbox" value="${p.num}" name="update_row" id="update_${p.num}">Use new info: ${p.prodname}</td><td align="right"><fmt:formatNumber value="${p.prodprice}" type="currency"/></td>
+          <td><input type="checkbox" value="${p.saleprodid}" name="update_row" id="update_${p.num}">Use new info: ${p.prodname}</td><td align="right"><fmt:formatNumber value="${p.prodprice}" type="currency"/></td>
         </c:set>
       </c:if>
+      <c:set var="profit" value="${p.profit}"/>
+      <c:set var="profit_name" value="profit_update_${p.saleprodid}"/>
+      <c:set var="profit_id" value="${p.saleprodid}"/>
+      <c:set var="profit_change">onchange="document.getElementById('update_profit_${p.num}').value=${p.saleprodid};"</c:set>
+      <c:set var="profit_visible" value="visible"/>
       <c:if test="${p.ordercount > 0}">
         <c:set var="disabled">disabled="true"</c:set>
       </c:if>
@@ -247,12 +275,22 @@ After checking the boxes as desired, click the Save button to save the changes.
       <c:set var="cboxname" value="insert_row"/>
       <c:set var="cboxdel" value=""/>
       <c:set var="change1" value=""/>
+      <c:set var="change2" value=""/>
+      <c:set var="profit" value="${sale.rows[0].profit}"/>
+      <c:set var="profit_name" value="profit_add_${p.num}"/>
+      <c:set var="profit_id" value="${p.num}"/>
+      <c:set var="profit_visible" value="hidden"/>
+      <c:set var="set_profit_visibility"></c:set>
     </c:otherwise>
   </c:choose>
 <tr>
-<td><input type="checkbox" value="${p.num}" name="${cboxname}" id="checkbox_${p.num}" ${checked} ${disabled} onchange="${change1} ${change2}">${cboxdel}</td>
+<td><input type="checkbox" value="${p.num}" name="${cboxname}" id="checkbox_${p.num}" ${checked} ${disabled} onchange="${change1} ${change2} setVisible('profit_field_${p.num}', 'checkbox_${p.num}');">${cboxdel}</td>
 <td>${name} <font size="-1">(${p.num} ${p_saleprodid})</font></td>
 <td align="right"><fmt:formatNumber value="${price}" type="currency"/></td>
+<td align="center">
+    <input type="text" style="visibility: ${profit_visible};" id="profit_field_${p.num}" name="${profit_name}" value="${profit}" size="5" maxlength="5" ${profit_change}/>
+    <input type="hidden" value="" name="update_profit" id="update_profit_${p.num}"/>
+</td>
 ${changebox}
 </tr>  
 </c:forEach>

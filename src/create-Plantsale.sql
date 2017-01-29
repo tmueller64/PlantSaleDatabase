@@ -148,6 +148,7 @@ saleID INTEGER default '0',
 name VARCHAR(30),
 num INTEGER default '0',
 unitprice NUMERIC(8,2) NOT NULL default '0',
+profit FLOAT default '0.0',
 PRIMARY KEY (id)
 );
 
