@@ -34,7 +34,8 @@
     limitdeletetablekey="orgID" limitdeletekey="id"
     itemeditpage="orgedit.jsp?tab=Properties"/>
     <p class="instructions">
-    Note: an organization cannot be deleted until all users, customers, sellers, seller groups and sales for the organization have been deleted.
+    Note: an organization cannot be deleted from here unless all users, customers, sellers, seller groups and sales for the organization have been deleted.
+    <br>An entire organization can be deleted from the <a href="admin.jsp?tab=Reports+%26+Tasks">Reports &amp; Tasks</a> tab. 
     </p>
    </psstags:tab>
 
@@ -69,8 +70,9 @@
 </ul>
 <p class="instructions">Tasks<p>
 <ul class="tasklist">
-    <li><a href="massdeleteadmin.jsp">Mass Delete of Old Data</li>
     <li><a href="recalculateinventoryadmin.jsp">Recalculate Remaining Product Inventory</li>
+    <li><a href="massdeleteadmin.jsp">Mass Delete of Old Data</li>
+    <li><a href="orgdeleteadmin.jsp">Delete of Entire Organization</li>
     <li><a href="/cgi/mkbackup.cgi">Make Backup</a></li>
 </ul>
 </psstags:tab>
