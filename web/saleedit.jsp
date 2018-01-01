@@ -119,6 +119,13 @@ These are the orders that have been entered for this sale.
     </jsp:attribute>
  </psstags:datatable>
 </psstags:tab>
+      
+<psstags:tab name="Reports">
+    <p class="instructions">Reports</p>
+    <ul class="tasklist">
+        <li><a href="rpcustorders.jsp" onclick="runWaitScreen()">Customer Orders</a></li>
+    </ul>
+</psstags:tab>
 
 <c:if test="${userrole == 'admin'}">
 

@@ -139,7 +139,7 @@
 <p class="instructions">Select one of the following reports:</p>
 <h2>Pre-Sale Reports</h2>
 <ul class="tasklist">
-<li><a href="rpfamcustlist.jsp" onclick="runWaitScreen()">Per Family Customer Listing</a></li>
+<li><a href="rpfamcustlist.jsp" onclick="runWaitScreen()">Per Family/Seller Customer Listing</a></li>
 </ul>
 
 <h2>Prize Administration Reports</h2>

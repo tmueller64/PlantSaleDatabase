@@ -21,9 +21,8 @@
    <jsp:attribute name="query">
         SELECT sum(custorderitem.quantity * saleproduct.unitprice), 
                sum(custorderitem.quantity)
-        FROM custorderitem, saleproduct, custorder, seller
+        FROM custorderitem, saleproduct, custorder
         WHERE custorder.id = custorderitem.orderID and 
-              custorder.sellerID = seller.id and
               custorderitem.saleproductID = saleproduct.id and
               ${customcriteria};
    </jsp:attribute>
