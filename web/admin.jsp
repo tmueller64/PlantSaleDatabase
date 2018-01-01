@@ -66,6 +66,7 @@
 <li><a href="rptotalsalesadmin.jsp" onclick="runWaitScreen()">Total Sales by Date</a></li>
 <li><a href="rptotalsalesbyorgadmin.jsp" onclick="runWaitScreen()">Total Sales by Organization by Date</a></li>
 <li><a href="rptotalsalesbyproductadmin.jsp" onclick="runWaitScreen()">Total Sales by Product by Date</a></li>
+<li><a href="rptotalsalesbyproductfullflatadmin.jsp" onclick="runWaitScreen()">Total Sales by Product (Full Flats) by Date</a></li>
 <li><a href="rpgrossprofitadmin.jsp" onclick="runWaitScreen()">Gross Profit for Active Sales</a></li>
 </ul>
 <p class="instructions">Tasks<p>
