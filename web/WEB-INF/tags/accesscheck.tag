@@ -8,6 +8,10 @@
 </c:if>
 <c:if test="${(userrole == 'dataentry' && (!fn:endsWith(pageContext.request.requestURI, '/enterorder.jsp') &&
                                            !fn:endsWith(pageContext.request.requestURI, '/lookupcust.jsp'))) ||
+              (userrole == 'orgreports' && (!fn:endsWith(pageContext.request.requestURI, '/orgreports.jsp') &&
+                                            !fn:endsWith(pageContext.request.requestURI, '/rpssbgroup.jsp') &&
+                                            !fn:endsWith(pageContext.request.requestURI, '/rpsgroupsum.jsp') &&
+                                            !fn:endsWith(pageContext.request.requestURI, '/rptotalsales.jsp'))) ||
               (userrole == 'orgadmin' && fn:endsWith(pageContext.request.requestURI, 'admin.jsp'))}">
   <c:redirect url="accessviolation.html"/>
 </c:if>

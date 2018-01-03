@@ -48,6 +48,7 @@
     <c:when test="${userrole == 'admin'}"><c:redirect url="admin.jsp"/></c:when>
     <c:when test="${userrole == 'orgadmin'}"><c:redirect url="orgedit.jsp"/></c:when>
     <c:when test="${userrole == 'dataentry'}"><c:redirect url="enterorder.jsp"/></c:when>
+    <c:when test="${userrole == 'orgreports'}"><c:redirect url="orgreports.jsp"/></c:when>
   </c:choose>
   <c:set var="infomsg" scope="session" value="Invalid user role. Please contact the administrator."/>
   <c:redirect url="index.jsp"/>    

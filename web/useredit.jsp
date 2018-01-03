@@ -43,6 +43,7 @@
           <option value="admin" <c:if test="${row['role'] == 'admin'}">selected="true"</c:if>>Administrator</option>
           <option value="orgadmin" <c:if test="${row['role'] == 'orgadmin'}">selected="true"</c:if>>Organization Administrator</option>
           <option value="dataentry" <c:if test="${row['role'] == 'dataentry'}">selected="true"</c:if>>Order Data Entry</option>
+          <option value="orgreports" <c:if test="${row['role'] == 'orgreports'}">selected="true"</c:if>>Organization Reports</option>
          </select>
        </psstags:inputfield>
      </jsp:body>
