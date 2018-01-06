@@ -207,24 +207,68 @@ To discontinue offering a product as part of this sale, uncheck the check box. I
 is currently included in any customer order for this sale, it cannot be discontinued. 
 </p>
 <p class="instructions">
+Select a product group and click Apply to select all of the products in that product group.
+</p>
+<p class="instructions">
 After checking the boxes as desired, click the Save button to save the changes.
 </p>
 <psstags:showinfomsg/>
 
 <div class="pssTblMgn">
+<sql:transaction dataSource="${pssdb}">
+<script>
+pg = new Array();
+pgname = new Array();
+    <sql:query var="pgroup">
+        SELECT id, name FROM productgroup;    
+    </sql:query>
+    <c:forEach var="p" items="${pgroup.rows}">
+        pgname[${p.id}] = "${p.name}";
+        <sql:query var="pgroupmem">
+            SELECT productNum FROM productgroupmember WHERE productgroupID = ?;
+            <sql:param value="${p.id}"/>
+        </sql:query>
+        <c:set var="m" value="0"/>
+        <c:forEach var="q" items="${pgroupmem.rows}">
+            <c:set var="m" value="${m}, \"${q.productNum}\""/>
+        </c:forEach>
+        pg["${p.id}"] = [ ${m} ];
+    </c:forEach>
+        
+function inGroup(num, g) {
+    return pg[g].includes(num);
+}
+function enableCurrentProductGroup() {
+    var f=document.productform; 
+    pgroup=document.productform.productgroup.value; 
+    for (i=0; i<f.elements.length; i++) {
+        var e=f.elements[i];
+        if (e.name && (e.name == 'insert_row' || e.name == 'delete_row_shown') && !e.disabled && inGroup(e.value, pgroup)) {
+            e.checked=true;
+            e.onchange();
+        }
+    };
+    return false;
+}
+</script>
 <form name="productform" method="POST" action="saleedit.jsp" onclick="hideinfomsg();">
 <table border="0" style="width: 75%">
 <caption class="pssTblTtlTxt">Products for ${r.rows[0].name}</caption>
 <tr>
 <th class="pssTblColHdrSel" width="3%" align="center" nowrap="nowrap" scope="col">
-<a href="#" name="SelectAllHref" title="Select Items Currently Displayed" onclick="javascript:var f=document.productform;for (i=0; i<f.elements.length; i++) {var e=f.elements[i];if (e.name && (e.name == 'insert_row' || e.name == 'delete_row_shown') && !e.disabled) e.checked=true;};return false;"><img name="SelectAllImage" src="images/check_all.gif" alt="Select Items Currently Displayed" align="top" border="0" height="13" width="15" /></a>
-<a href="#" name="DeselectAllHref" title="Deselect Items Currently Displayed" onclick="javascript:var f=document.productform;for (i=0; i<f.elements.length; i++) {var e=f.elements[i];if (e.name && (e.name == 'insert_row' || e.name == 'delete_row_shown')) e.checked=false;};return false;"><img name="DeselectAllImage" src="images/uncheck_all.gif" alt="Deselect Items Currently Displayed" align="top" border="0" height="13" width="15" /></a>
+<a href="#" name="SelectAllHref" title="Select Items Currently Displayed" onclick="javascript:var f=document.productform;for (i=0; i<f.elements.length; i++) {var e=f.elements[i];if (e.name && (e.name == 'insert_row' || e.name == 'delete_row_shown') && !e.disabled) { e.checked=true; e.onchange();}};return false;"><img name="SelectAllImage" src="images/check_all.gif" alt="Select Items Currently Displayed" align="top" border="0" height="13" width="15" /></a>
+<a href="#" name="DeselectAllHref" title="Deselect Items Currently Displayed" onclick="javascript:var f=document.productform;for (i=0; i<f.elements.length; i++) {var e=f.elements[i];if (e.name && (e.name == 'insert_row' || e.name == 'delete_row_shown')) {e.checked=false; e.onchange();}};return false;"><img name="DeselectAllImage" src="images/uncheck_all.gif" alt="Deselect Items Currently Displayed" align="top" border="0" height="13" width="15" /></a>
+<select name="productgroup">
+    <c:forEach var="p" items="${pgroup.rows}">
+        <option value="${p.id}">${p.name}</option>
+    </c:forEach>
+</select>
+<input type="button" value="Apply" onclick="javascript:enableCurrentProductGroup();">
 </th>
 <th style="text-align: left" class="pssTblColHdr" colspan="2">Product</th>
 <th style="text-align: center" class="pssTblColHdr">Profit</th>
 <th colspan="0"></th>
 </tr>
-<sql:transaction dataSource="${pssdb}">
     <sql:query var="product">
         SELECT product.id + 0 AS prodid,
         CONCAT(product.name, "") AS prodname,
@@ -246,7 +290,6 @@ After checking the boxes as desired, click the Save button to save the changes.
     <sql:query var="sale">
         SELECT profit FROM sale where id = ${currentSaleId};
     </sql:query>
-</sql:transaction>
 
 <c:forEach var="p" items="${product.rows}">
   <c:set var="change2" value=""/>
@@ -309,6 +352,7 @@ ${changebox}
 </td>
 </table>
 </form>
+</sql:transaction>
 </div>
 
 </psstags:tab>

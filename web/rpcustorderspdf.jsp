@@ -82,6 +82,7 @@ Font hdr2font = FontFactory.getFont(FontFactory.HELVETICA, 14, Font.BOLD);
     pp.setAlignment(Paragraph.ALIGN_CENTER);
     document.add(pp);
     document.add(new Paragraph(" "));
+    document.add(new Paragraph(" "));
     total = BigDecimal.ZERO;
     table = new PdfPTable(4);
     table.setTotalWidth(document.getPageSize().width());

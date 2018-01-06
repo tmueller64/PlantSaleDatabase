@@ -22,7 +22,8 @@
             FROM (SELECT custorder.saleID, saleproduct.num AS num, saleproduct.name AS name, 
                     unitsperflat, CEILING(SUM(custorderitem.quantity) / unitsperflat) AS flats
                  FROM org, custorderitem, saleproduct, custorder, seller, product
-                 LEFT JOIN (SELECT productID, MIN(unitsperflat) AS unitsperflat FROM supplieritem 
+                 LEFT JOIN (SELECT productID, MIN(unitsperflat) AS unitsperflat FROM supplier, supplieritem
+                        WHERE supplier.id = supplieritem.supplierID
 			GROUP BY productID) AS suppitem ON suppitem.productID = product.id
                  WHERE org.id = seller.orgID AND
                        custorder.id = custorderitem.orderID AND

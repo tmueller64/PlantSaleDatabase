@@ -9,6 +9,21 @@ alternate INTEGER default '0',
 PRIMARY KEY (id), UNIQUE KEY (num)
 );
 
+drop table if exists productgroup;
+CREATE TABLE productgroup (
+id INTEGER auto_increment,
+name VARCHAR(30) NOT NULL default 'New Product Group Name',
+PRIMARY KEY (id), UNIQUE KEY (name)
+);
+
+drop table if exists productgroupmember;
+CREATE TABLE productgroupmember (
+id INTEGER auto_increment,
+productgroupID INTEGER,
+productNum INTEGER,
+PRIMARY KEY (id), KEY(productgroupID)
+);
+
 drop function if exists remainingInventory;
 DELIMITER $$
 CREATE FUNCTION remainingInventory(inventory INTEGER, ordered INTEGER) RETURNS INTEGER

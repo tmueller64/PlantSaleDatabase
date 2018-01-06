@@ -52,6 +52,16 @@
     </p>
 </psstags:tab>
 
+<psstags:tab name="Product Groups">
+   <psstags:datatable title="Product Groups"
+    table="productgroup"
+    order="ORDER BY productgroup.name"
+    columnNames="Name,# in Group"
+    columns="productgroup.name,count"
+    itemeditpage="productgroupeditadmin.jsp"
+    limitdeletetable="productgroupmember" limitdeletetablekey="productgroupID" limitdeletekey="id"/>
+</psstags:tab>
+    
 <psstags:tab name="Suppliers">
    <psstags:datatable title="Suppliers"
     table="supplier"
