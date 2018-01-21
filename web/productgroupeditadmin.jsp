@@ -85,7 +85,7 @@ After checking the boxes as desired, click the Save button to save the changes.
         FROM product 
         LEFT JOIN (SELECT id as memberid, productNum, productgroupID FROM productgroupmember WHERE productgroupID = ?) 
             AS pg ON product.num = pg.productNum
-        ORDER BY product.num;
+        ORDER BY rightNum(product.num);
       <sql:param value="${currentProductGroupId}"/>
     </sql:query>
 </sql:transaction>

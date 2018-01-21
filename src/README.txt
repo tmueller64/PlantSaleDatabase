@@ -93,3 +93,17 @@ The remaining inventory for a product must be recalculated when:
 - mass delete of users via the admin tasks page - currently manual via Tasks page
 - an order is created or edited 
 - orders are deleted from seller, sale, customer pages
+
+Modification for changing product num to string:
+
+alter table product modify column num varchar(10) not null default '0';
+alter table saleproduct modify column num varchar(10) not null;
+alter table productgroupmember modify column productNum varchar(10) not null;
+DELIMITER $$
+CREATE FUNCTION rightNum(num TINYTEXT) RETURNS TINYTEXT
+  DETERMINISTIC
+BEGIN
+  return RIGHT(CONCAT(SPACE(10), num), 10);
+END;
+$$
+DELIMITER ;

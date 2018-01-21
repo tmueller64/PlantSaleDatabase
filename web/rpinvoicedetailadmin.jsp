@@ -88,7 +88,7 @@ ${bt.city}, ${bt.state}  ${bt.postalcode}<br>
                               WHERE fromsaleID = ${activeSaleId} AND transfer.saleproductID = saleproduct.id
                               GROUP BY num) AS trout ON trout.id = saleproduct.id
             WHERE saleproduct.saleID = ${activeSaleId}
-            ORDER BY saleproduct.num;
+            ORDER BY rightNum(saleproduct.num);
     </sql:query>
     
 <c:set var="title" value="Invoice Detail Report"/>

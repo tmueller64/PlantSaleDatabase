@@ -80,7 +80,7 @@
                       saleproductorder.supplierID = "${currentSupplierId}"
                 GROUP BY num, name
                 HAVING fordered > 0
-                ORDER by num;
+                ORDER by rightNum(num);
             </jsp:attribute>
         </psstags:report>
         </td>

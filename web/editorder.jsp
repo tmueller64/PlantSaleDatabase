@@ -120,7 +120,7 @@ pp = new Array();
    <sql:param value="${currentOrderId}"/>
 </sql:query>
 <c:forEach var="p" items="${r.rowsByIndex}">
-  pn[${p[2]}] = '${fn:replace(p[1],"'","\\'")}'; po[${p[2]}] = ${p[0]}; pp[${p[2]}] = ${p[3]}; pq[${p[2]}] = 0;
+  pn["${p[2]}"] = '${fn:replace(p[1],"'","\\'")}'; po["${p[2]}"] = ${p[0]}; pp["${p[2]}"] = ${p[3]}; pq["${p[2]}"] = 0;
 </c:forEach>
 
 <sql:query var="items" dataSource="${pssdb}">
@@ -128,7 +128,7 @@ pp = new Array();
   <sql:param value="${currentOrderId}"/>
 </sql:query>
 <c:forEach var="i" items="${items.rows}">
-  pq[${i.num}] = ${i.quantity};
+  pq["${i.num}"] = ${i.quantity};
 </c:forEach>
 </script>
 
@@ -204,7 +204,7 @@ onFocus="cal.select(document.orderform.orderdate,'orderanchor','yyyy-MM-dd'); re
 
 <tr valign="top">
 <td class="textfieldlabel">Product #:</td>
-<td class="textfieldvalue"><input type="text" name="productnum" size="4"></td>
+<td class="textfieldvalue"><input type="text" name="productnum" size="5"></td>
 <td class="textfieldlabel2">Quantity:</td>
 <td class="textfieldvalue"><input type="text" name="quantity" size="4" onchange="edititem()"></td>
 </tr>

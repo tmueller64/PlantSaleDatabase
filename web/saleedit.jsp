@@ -285,7 +285,7 @@ function enableCurrentProductGroup() {
           ON product.num = sp.num
         LEFT JOIN custorderitem ON sp.saleprodid = custorderitem.saleproductID 
         GROUP BY product.id 
-        ORDER BY product.num;
+        ORDER BY rightNum(product.num);
     </sql:query>
     <sql:query var="sale">
         SELECT profit FROM sale where id = ${currentSaleId};
@@ -446,12 +446,12 @@ After entering the desired amounts, click the Save button to save the changes.
     <sql:query var="product">        
         SELECT saleproduct.id + 0 as prodid,
         CONCAT(saleproduct.name, "") as prodname,
-        saleproduct.num + 0 as num,
+        CONCAT(saleproduct.num, "") as num,
         ${sfields}
         FROM saleproduct
         ${sjoins}
         WHERE saleproduct.saleID = ${currentSaleId}
-        ORDER BY saleproduct.num;       
+        ORDER BY rightNum(saleproduct.num);       
     </sql:query>    
 </sql:transaction>
 
@@ -475,11 +475,10 @@ ${sheader}
 <td align="right" style="padding-right: 10px">${p.unitsordered}</td>
 <td id="unitsextra_${p.num}" align="right" style="padding-right: 10px">0</td>
 <td id="unitstoorder_${p.num}" align="right" style="padding-right: 10px">0</td>
-<c:set var="highestnum" value="${p.num}"/>
 <c:set var="jscript">${jscript}
-  ounits[${p.num}] = ${0 + p.unitsordered};
-  trin[${p.num}] = ${0 + p.trincount};
-  trout[${p.num}] = ${0 + p.troutcount};
+  ounits["${p.num}"] = ${0 + p.unitsordered};
+  trin["${p.num}"] = ${0 + p.trincount};
+  trout["${p.num}"] = ${0 + p.troutcount};
 </c:set>
 <c:forEach var="s" items="${suppliers.rows}" varStatus="si">
   <c:set var="unitsperflat">s${s.id}unitsperflat</c:set>
@@ -514,10 +513,9 @@ ${sheader}
 </form>
 <script>
 ${jscript}
-    highestnum = ${highestnum};
     numsupp = ${suppliers.rowCount};
     function update_order() {
-      for (i = 1; i <= highestnum; i++) {
+      for (i in ounits) {
         vi = trin[i] - trout[i];
         v = document.getElementById("unitstoorder_" + i);
         if (v != null) {
@@ -609,12 +607,12 @@ After entering the delivered amounts, click the Save button to save the changes.
 <sql:query var="product">
     SELECT saleproduct.id + 0 as prodid,
            CONCAT(saleproduct.name, "") as prodname,
-           saleproduct.num + 0 as num          
+           CONCAT(saleproduct.num, "") as num          
            ${sfields}
        FROM saleproduct
        ${sjoins}
        WHERE saleproduct.saleID = ?
-       ORDER BY saleproduct.num;       
+       ORDER BY rightNum(saleproduct.num);       
   <sql:param value="${currentSaleId}"/>
 </sql:query>
 </sql:transaction>
@@ -658,7 +656,7 @@ ${sheader}
                   transfer.saleproductID = saleproduct.id and
                   transfer.fromsaleID = sale.id and
                   sale.orgID = org.id"
-    order="ORDER BY saleproduct.num"
+    order="ORDER BY rightNum(saleproduct.num)"
     initialValues="(tosaleID) VALUES (${currentSaleId})"
     columnNames="Product,Expected Quantity,Actual Quantity,From Sale"
     columns="saleproduct.name,transfer.expectedquantity,transfer.actualquantity,CONCAT(org.name,' - ',sale.name)"

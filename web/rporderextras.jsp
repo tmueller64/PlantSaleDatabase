@@ -61,7 +61,7 @@ ${o.city}, ${o.state}  ${o.postalcode}<br>
                                     saleproduct.saleID = ${activeSaleId}
                               GROUP BY saleproduct.id) AS ord ON ord.id = saleproduct.id
             WHERE saleproduct.saleID = ${activeSaleId}
-            ORDER BY saleproduct.num;
+            ORDER BY rightNum(saleproduct.num);
     </sql:query>
     
 <c:set var="title" value="Plant Sale Inventory Information"/>

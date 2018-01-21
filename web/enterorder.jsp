@@ -398,7 +398,7 @@ pp = new Array();
    <sql:param value="${currentSaleId}"/>
 </sql:query>
 <c:forEach var="p" items="${r.rowsByIndex}">
-  pn[${p[2]}] = '${fn:replace(p[1],"'","\\'")}'; po[${p[2]}] = ${p[0]}; pp[${p[2]}] = ${p[3]}; pq[${p[2]}] = 0;
+  pn["${p[2]}"] = '${fn:replace(p[1],"'","\\'")}'; po["${p[2]}"] = ${p[0]}; pp["${p[2]}"] = ${p[3]}; pq["${p[2]}"] = 0;
 </c:forEach>
 
 </script>
@@ -486,7 +486,7 @@ onFocus="cal.select(document.orderform.orderdate,'orderanchor','yyyy-MM-dd'); re
 </td>
 </tr>
 
-<tr><td class="textfieldlabel">Product #:</td><td><input type="text" name="productnum" size="4"></td>
+<tr><td class="textfieldlabel">Product #:</td><td><input type="text" name="productnum" size="5"></td>
 <td class="textfieldlabel2">Quantity:</td><td colspan="3"><input type="text" name="quantity" size="4" onchange="edititem()"></td>
 </tr>
 </table>

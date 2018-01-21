@@ -42,6 +42,16 @@ END;
 $$
 DELIMITER ;
 
+drop function if exists rightNum;
+DELIMITER $$
+CREATE FUNCTION rightNum(num TINYTEXT) RETURNS TINYTEXT
+  DETERMINISTIC
+BEGIN
+  return RIGHT(CONCAT(SPACE(10), num), 10);
+END;
+$$
+DELIMITER ;
+
 drop table if exists supplier;
 CREATE TABLE supplier (
 id INTEGER auto_increment ,
@@ -213,9 +223,9 @@ PRIMARY KEY (id), KEY (orderID), KEY (saleproductID)
 
 insert into org values (1, "Janet's Jungle", "950 N. Nye Avenue", "Fremont", "NE", "68025", "402-980-3807", "Janet Saeger", 0);
 insert into user values (1, 1, "admin", "jj", "admin");
-insert into product values (1, "Mums", 1, 2.50); 
-insert into product values (2, "Lillies", 2, 3.00);
-insert into product values (3, "Tree", 3, 10.00);
+insert into product values (1, "Mums", 1, 2.50, 0, 0); 
+insert into product values (2, "Lillies", 2, 3.00, 0, 0);
+insert into product values (3, "Tree", 3, 10.00, 0, 0);
 insert into supplier values (1, "DeJong", "123 Some Street", "Somecity", "IA", "5xxxx", "xxx-xxx-xxxx", "xxx-xxx-afax", "Some Iowa Guy");
 insert into supplier values (2, "Michigan Westshores", "123 Some Street", "Somecity", "MI", "3xxxx", "xxx-xxx-xxxx", "xxx-xxx-afax", "Some Michigan Guy");
 insert into supplieritem values (1, 1, 1, 6, "6.25", 0);

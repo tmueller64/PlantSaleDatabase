@@ -48,7 +48,7 @@
  <psstags:datatable title="Supplied Products"
     table="supplieritem"
     filter=",product WHERE supplierID = ${currentSupplierId} and productID = product.id"
-    order="ORDER by product.num"
+    order="ORDER by rightNum(product.num)"
     initialValues="(supplierID) VALUES (${currentSupplierId})"
     columnNames="Name,Number,Units Per Flat,Cost Per Flat,Inventory"
     columns="product.name,product.num,unitsperflat,costperflat,inventory"

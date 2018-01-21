@@ -102,7 +102,7 @@ function money(n)
 
 function edititem()
 {
-    var pnum = document.orderform.productnum.value - 0;
+    var pnum = document.orderform.productnum.value;
     var pqty = document.orderform.quantity.value - 0;
     if (po[pnum]) {
 	pq[pnum] = pqty;
@@ -116,9 +116,9 @@ function updatelist()
     var s = "";
     var t = "";
     var subtotal = 0;
-    for (i = 0; i < pn.length; i++) {
+    for (i in pn) {
 	if (pq[i]) {
-	    s += fixedfield(i, 3) + ". " + fixedtextfield(pn[i], 40) + "     " + 
+	    s += fixedfield(i, 5) + ". " + fixedtextfield(pn[i], 40) + "     " + 
 		fixedfield(pq[i], 3) + 
 		" @  " + fixedfield("$" + money(pp[i]), 6) + "\n";
 	    t += po[i] + ":" + pq[i] + ":";

@@ -31,9 +31,9 @@
                        custorderitem.saleproductID = saleproduct.id AND
                        saleproduct.num = product.num AND ${customcriteria}
                  GROUP BY saleproduct.num, custorder.saleID
-                 ORDER by saleproduct.num) as prodflats
+                 ORDER BY rightNum(saleproduct.num)) as prodflats
 	    GROUP BY num
-            ORDER BY num;
+            ORDER BY rightNum(num);
    </jsp:attribute>
 </psstags:report>
 </body>

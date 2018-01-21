@@ -90,7 +90,7 @@
                         FROM product
                         ${sjoins}
                         WHERE ${sfilter}
-                        ORDER BY product.num;    
+                        ORDER BY rightNum(product.num);    
                     </sql:query>
                 </sql:transaction>
                 <thead>

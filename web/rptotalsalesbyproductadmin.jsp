@@ -27,7 +27,7 @@
               custorderitem.saleproductID = saleproduct.id and
               ${customcriteria}
         GROUP BY saleproduct.num
-        ORDER by saleproduct.num;
+        ORDER BY rightNum(saleproduct.num);
    </jsp:attribute>
 </psstags:report>
 </body>

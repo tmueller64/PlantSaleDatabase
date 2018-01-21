@@ -44,7 +44,7 @@
     table="product"
     columnNames="Name, Number"
     columns="product.name,product.num"
-    order="ORDER BY product.num"
+    order="ORDER BY rightNum(product.num)"
     itemeditpage="producteditadmin.jsp"
     limitdeletetable="saleproduct" limitdeletetablekey="num" limitdeletekey="num"/>
     <p class="instructions">

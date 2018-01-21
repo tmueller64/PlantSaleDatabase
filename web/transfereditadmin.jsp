@@ -37,7 +37,7 @@
            <%-- drop down for product --%>
            <psstags:inputfield label="Product">
                <sql:query var="pq" dataSource="${pssdb}">
-                   SELECT id, num, name FROM saleproduct WHERE saleID = ? ORDER BY num;
+                   SELECT id, num, name FROM saleproduct WHERE saleID = ? ORDER BY rightNum(num);
                    <sql:param value="${currentSaleId}"/>
                </sql:query>
                <select name="saleproductID">
