@@ -92,12 +92,7 @@ function fixedtextfield(t, len)
 
 function money(n)
 {
-    var s = "" + n;
-    var i = s.indexOf(".");
-    if (i == -1) s += ".00";
-    else if (s.length > i + 3) s = s.substring(0, i + 3);
-    if (s.match(/\.[0-9]$/)) s += "0";
-    return s;
+    return n.toFixed(2);
 }
 
 function edititem()
