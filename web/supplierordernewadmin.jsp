@@ -15,14 +15,15 @@
     </c:if>
   
     <sql:query var="s" dataSource="${pssdb}">
-        SELECT address, city, state, postalcode FROM org,sale
+        SELECT address, city, state, postalcode, saleend FROM org,sale
         WHERE org.id = sale.orgID and sale.id = ?;
         <sql:param value="${param.primarysaleID}"/>
     </sql:query>
     <sql:update var="updateCount" dataSource="${pssdb}">
-        INSERT INTO supplierorder (supplierID, deladdress, delcity, delstate,delpostalcode)
-        VALUES (?, ?, ?, ?, ?);
+        INSERT INTO supplierorder (supplierID, expecteddeliverydate, deladdress, delcity, delstate, delpostalcode)
+        VALUES (?, ?, ?, ?, ?, ?);
         <sql:param value="${currentSupplierId}"/>
+        <sql:param value="${s.rows[0].saleend}"/>
         <sql:param value="${s.rows[0].address}"/>
         <sql:param value="${s.rows[0].city}"/>
         <sql:param value="${s.rows[0].state}"/>
@@ -37,9 +38,11 @@
     <sql:update var="updateCount" dataSource="${pssdb}">
         UPDATE saleproductorder,saleproduct SET saleproductorder.supplierorderID = ?
             WHERE saleproductorder.saleproductID = saleproduct.id and
-                  saleproduct.saleID = ?;
+                  saleproduct.saleID = ? and
+                  saleproductorder.supplierId = ?;
       <sql:param value="${soid}"/>
       <sql:param value="${param.primarysaleID}"/>
+      <sql:param value="${currentSupplierId}"/>
     </sql:update>
     <c:set var="infomsg" scope="session">Order created.  Add additional sales or edit details if desired.</c:set>
     <c:redirect url="${editurl}"/>
@@ -68,7 +71,8 @@
                                 FROM org,sale,saleproduct,saleproductorder
                                 WHERE org.id = sale.orgID and sale.id = saleproduct.saleID and 
                                       saleproductorder.saleproductID = saleproduct.id and
-                                      year(sale.saleend) = year(curdate()) and
+                                      saleproductorder.supplierorderID = 0 and
+                                      sale.id = org.activeSaleId and
                                       saleproductorder.supplierID = ?;
                             <sql:param value="${currentSupplierId}"/>
                         </sql:query>

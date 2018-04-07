@@ -26,7 +26,7 @@
         }
         msg.append("\n<br>\n");
         for (SortedMap row : checkInv.getRows()) {
-            int pnum = (Integer)row.get("num");
+            String pnum = (String)row.get("num");
             int alt = (Integer)row.get("alternate");
             String name = (String)row.get("name");
             msg.append("<br>" + pnum + ". " + name + ".");

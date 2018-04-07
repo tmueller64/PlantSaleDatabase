@@ -78,7 +78,7 @@
     </jsp:attribute>
  </psstags:datatable>
  <p class="instructions">
-   The sales from this year in the list below have not been assigned for a supplier delivery.
+   The active sales in the list below have not been assigned for a supplier delivery.
    To schedule a sale for delivery, create a new supplier order or edit an existing order.
  </p>
  <psstags:report title="Unassigned Sale Orders"
@@ -91,7 +91,7 @@
         WHERE org.id = sale.orgID and sale.id = saleproduct.saleID and 
               saleproductorder.saleproductID = saleproduct.id and 
               saleproductorder.supplierorderID = 0 and
-              year(sale.saleend) = year(curdate()) and
+              sale.id = org.activeSaleId and
               saleproductorder.supplierID = "${currentSupplierId}";
    </jsp:attribute>
 </psstags:report>

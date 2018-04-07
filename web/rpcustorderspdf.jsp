@@ -26,17 +26,20 @@ Font hdr2font = FontFactory.getFont(FontFactory.HELVETICA, 14, Font.BOLD);
           customer.phonenumber, customer.address,
           CONCAT(customer.city, ', ', customer.state, '  ', customer.postalcode) as address2,
           custorder.id,
-          saleproduct.num, custorderitem.quantity, saleproduct.name, 
-          custorderitem.quantity * saleproduct.unitprice as pcost
-     FROM custorderitem, custorder, saleproduct, customer, seller
-     WHERE seller.orgID = ? AND
+          saleproduct.num, custorderitem.quantity, 
+          CONCAT(saleproduct.name, '') as prodname, 
+          custorderitem.quantity * saleproduct.unitprice as pcost,
+          CONCAT(org.name, '') as orgname
+     FROM custorderitem, custorder, saleproduct, customer, seller, org
+     WHERE custorder.saleID = ? AND
+           custorder.sellerID = seller.id AND
+           seller.orgID = org.id AND
            custorderitem.orderID = custorder.id AND
            custorderitem.saleproductID = saleproduct.id AND
            custorder.customerID = customer.id AND
-           custorder.sellerID = seller.id AND
            rightNum(saleproduct.num) >= rightNum(?) AND rightNum(saleproduct.num) <= rightNum(?)
        ORDER BY customer.lastname, customer.firstname, custorder.orderdate, custorder.id, rightNum(saleproduct.num);
-   <sql:param value="${currentOrgId}"/>
+   <sql:param value="${currentSaleId}"/>
    <sql:param value="${pnumfrom}"/>
    <sql:param value="${pnumto}"/>
     </sql:query><c:set var="curorderid" value=""
@@ -66,8 +69,9 @@ Font hdr2font = FontFactory.getFont(FontFactory.HELVETICA, 14, Font.BOLD);
 /><c:set var="custaddress2" value="${rqr.address2}"
 /><c:set var="custphone" value="${rqr.phonenumber}"
 /><c:set var="sellername" value="${rqr.sname}"
+/><c:set var="orgname" value="${rqr.orgname}"
 /><%
-    pp = new Paragraph("Plant Sale Customer Order", hdrfont);
+    pp = new Paragraph((String)pageContext.getAttribute("orgname") + " Seed Order", hdrfont);
     pp.setAlignment(Paragraph.ALIGN_CENTER);
     document.add(pp);
     document.add(new Paragraph("Customer:", hdr2font));
@@ -100,7 +104,7 @@ Font hdr2font = FontFactory.getFont(FontFactory.HELVETICA, 14, Font.BOLD);
     table.addCell(cell);
 %></c:if
 ><c:set var="c1" value="${rqr.num} "
-/><c:set var="c2" value="${rqr.name} "
+/><c:set var="c2" value="${rqr.prodname} "
 /><c:set var="c3" value="${rqr.quantity} "
 /><c:set var="c4" value="${rqr.pcost}"
 /><%  

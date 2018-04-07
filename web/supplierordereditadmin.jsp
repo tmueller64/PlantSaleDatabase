@@ -85,9 +85,9 @@
                                         saleproductorder.supplierOrderID as soid
                             FROM org,sale,saleproduct,saleproductorder
                             WHERE org.id = sale.orgID and sale.id = saleproduct.saleID and
-                                  year(sale.saleend) = year(curdate()) and
                                   saleproductorder.saleproductID = saleproduct.id and 
                                   (saleproductorder.supplierorderID = 0 or saleproductorder.supplierOrderID = ?) and
+                                  sale.id = org.activeSaleId and
                                   saleproductorder.supplierID = ?;
                         <sql:param value="${currentSupplierOrderId}"/>
                         <sql:param value="${currentSupplierId}"/>
