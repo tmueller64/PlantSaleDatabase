@@ -77,6 +77,7 @@
 <li><a href="rptotalsalesbyorgadmin.jsp" onclick="runWaitScreen()">Total Sales by Organization by Date</a></li>
 <li><a href="rptotalsalesbyproductadmin.jsp" onclick="runWaitScreen()">Total Sales by Product by Date</a></li>
 <li><a href="rptotalsalesbyproductfullflatadmin.jsp" onclick="runWaitScreen()">Total Sales by Product (Full Flats) by Date</a></li>
+<li><a href="rpproductdetailadmin.jsp" onclick="runWaitScreen()">Product Sales Detail</a></li>
 <li><a href="rpgrossprofitadmin.jsp" onclick="runWaitScreen()">Gross Profit for Active Sales</a></li>
 <li><a href="rpinventoryadmin.jsp" onclick="runWaitScreen()">Remaining Product Inventory</a></li>
 </ul>
