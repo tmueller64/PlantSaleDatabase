@@ -42,12 +42,15 @@
       </c:if>
             
       <sql:update var="s">
+        DROP TABLE IF EXISTS temp${tid}_updateorder;
+      </sql:update>   
+      <sql:update var="s">
         CREATE TABLE temp${tid}_updateorder ( saleproductID INTEGER, quantity INTEGER );
       </sql:update>
         
       <%-- add the products from this order back to the inventory --%>
       <sql:update var="returnInv">
-          INSERT temp${tid}_updateorder (saleproductID, quantity)
+          INSERT INTO temp${tid}_updateorder (saleproductID, quantity)
             SELECT saleproductID, -quantity FROM custorderitem
                 WHERE orderID = ?
           <sql:param value="${currentOrderId}"/>

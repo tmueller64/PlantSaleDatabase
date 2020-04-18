@@ -90,6 +90,9 @@ function MicrosoftEventHandler_KeyDown() {
   <sql:transaction dataSource="${pssdb}">   
      
     <sql:update var="s">
+        DROP TABLE IF EXISTS temp${tid}_updateorder;
+    </sql:update> 
+    <sql:update var="s">
         CREATE TABLE temp${tid}_updateorder ( saleproductID INTEGER, quantity INTEGER );
     </sql:update>
     <c:set var="id" value=""/>

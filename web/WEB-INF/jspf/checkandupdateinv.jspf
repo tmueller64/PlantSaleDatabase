@@ -8,13 +8,15 @@
 --%>
 <c:set var="errormsg" scope="session" value=""/>
 <sql:query var="checkInv">
-        SELECT product.id, product.num as num, product.name, product.alternate, sum(quantity) as quantity
-            FROM product, temp${tid}_updateorder, saleproduct
-            WHERE temp${tid}_updateorder.saleproductID = saleproduct.id AND 
+        SELECT product.id, product.num as num, product.name, product.alternate, quantity
+            FROM product, saleproduct
+            INNER JOIN 
+                (SELECT saleproductID, sum(quantity) as quantity FROM temp${tid}_updateorder 
+                    GROUP BY saleproductID) AS updateorder
+            WHERE updateorder.saleproductID = saleproduct.id AND 
                   product.num = saleproduct.num AND
                   product.remaininginventory >= 0 AND
-                  product.remaininginventory < quantity
-            GROUP BY temp${tid}_updateorder.saleproductID
+                  product.remaininginventory < updateorder.quantity
   </sql:query>
 <%
     Result checkInv = (Result)pageContext.getAttribute("checkInv");
@@ -43,10 +45,10 @@
     <sql:update var="updateInv">
         UPDATE product oldproduct
             INNER JOIN
-              (SELECT product.id, sum(quantity) as quantity from product, temp${tid}_updateorder, saleproduct
+              (SELECT product.id, sum(quantity) as quantity FROM product, temp${tid}_updateorder, saleproduct
                   WHERE temp${tid}_updateorder.saleproductID = saleproduct.id AND 
                         product.num = saleproduct.num AND
-                        product.remaininginventory > 0
+                        product.remaininginventory >= 0
                   GROUP BY temp${tid}_updateorder.saleproductID)
               AS orditem ON oldproduct.id = orditem.id
             SET oldproduct.remaininginventory = oldproduct.remaininginventory - orditem.quantity;

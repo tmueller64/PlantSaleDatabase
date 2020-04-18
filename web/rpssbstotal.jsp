@@ -18,11 +18,12 @@
                 columnTypes="text,money,money,money">
    <jsp:attribute name="query">
     SELECT CONCAT(lastname, ', ', firstname) as sname, sum(amount), sum(donation),
-           sum(amount) * profit + sum(donation) as proceeds
+           sum(pamount) + sum(donation) as proceeds
     FROM (SELECT seller.lastname AS lastname, seller.firstname AS firstname, 
                  sum(custorderitem.quantity * saleproduct.unitprice) AS amount, 
                  sum(custorderitem.quantity) AS units,
-                 donation AS donation, seller.id AS sid, sale.profit AS profit
+                 sum(custorderitem.quantity * saleproduct.unitprice * saleproduct.profit) as pamount,
+                 donation AS donation, seller.id AS sid
             FROM custorder
             LEFT JOIN custorderitem ON custorder.id = custorderitem.orderID
             LEFT JOIN saleproduct ON custorderitem.saleproductID = saleproduct.id
