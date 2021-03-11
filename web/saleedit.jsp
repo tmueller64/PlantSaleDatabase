@@ -278,7 +278,8 @@ function enableCurrentProductGroup() {
         saleprice,
         saleprodid,
         count(orderID) as ordercount,
-        profit 
+        profit,
+        prodprofit
         FROM product 
         LEFT JOIN (SELECT id AS saleprodid, name AS salename, num, unitprice AS saleprice, profit
           FROM saleproduct WHERE saleID = ${currentSaleId}) AS sp
@@ -295,6 +296,7 @@ function enableCurrentProductGroup() {
   <c:set var="change2" value=""/>
   <c:set var="changebox"><td></td><td></td></c:set>
   <c:set var="disabled" value=""/>
+  <c:set var="calculatedprofit" value="${p.prodprofit != '' ? p.prodprofit : sale.rows[0].profit}"/>
   <c:choose>
     <c:when test="${!empty p.saleprodid}">
       <c:set var="name" value="${p.salename}"/>
@@ -326,7 +328,7 @@ function enableCurrentProductGroup() {
       <c:set var="cboxdel" value=""/>
       <c:set var="change1" value=""/>
       <c:set var="change2" value=""/>
-      <c:set var="profit" value="${sale.rows[0].profit}"/>
+      <c:set var="profit" value="${calculatedprofit}"/>
       <c:set var="profit_name" value="profit_add_${p.num}"/>
       <c:set var="profit_id" value="${p.num}"/>
       <c:set var="profit_visible" value="hidden"/>

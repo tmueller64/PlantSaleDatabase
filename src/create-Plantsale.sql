@@ -6,6 +6,7 @@ num INTEGER default '0',
 unitprice NUMERIC(8,2) NOT NULL default '0',
 remaininginventory INTEGER default '-1',
 alternate INTEGER default '0',
+prodprofit VARCHAR(6) default '',
 PRIMARY KEY (id), UNIQUE KEY (num)
 );
 

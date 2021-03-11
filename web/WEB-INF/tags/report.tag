@@ -15,6 +15,7 @@
 <%@attribute name="columnNames"%>
 <%@attribute name="columnTypes"%>
 <%@attribute name="addRowCount"%>
+<%@attribute name="customizeProductRange" description="If true, provide customization for report based on saleproduct.num product range"%>
 <%@attribute name="doNotUseOrg" description="If true, the report does not depend on the currentOrgId attribute being set"%>
 <%@attribute name="doNotCustomize"%>
 <%@attribute name="query" fragment="true"%>
@@ -34,6 +35,8 @@
   <c:when test="${!empty param.customize}">
     <c:set var="dtfrom" value="${param.dtfrom}"/>
     <c:set var="dtto" value="${param.dtto}"/>
+    <c:set var="prfrom" value="${param.prfrom}"/>
+    <c:set var="prto" value="${param.prto}"/>
   </c:when>
   <c:when test="${!doNotUseOrg && !empty currentOrgId && currentOrgId != 0}">
     <sql:query var="dt" dataSource="${pssdb}">
@@ -42,11 +45,15 @@
     </sql:query>
     <c:set var="dtfrom" value="${dt.rows[0].salestart}"/>
     <c:set var="dtto" value="${dt.rows[0].saleend}"/>
+    <c:set var="prfrom" value=""/>
+    <c:set var="prto" value=""/>
   </c:when>
   <c:otherwise>
     <c:set var="year" value='<%= new SimpleDateFormat("yyyy").format(new Date(System.currentTimeMillis())) %>'/>
     <c:set var="dtfrom" value="${year}-01-01"/>
     <c:set var="dtto" value="${year}-12-31"/>
+    <c:set var="prfrom" value=""/>
+    <c:set var="prto" value=""/>
   </c:otherwise>
 </c:choose>
 
@@ -87,6 +94,12 @@
   </c:forEach>
   </select>
 </c:if>
+<c:if test="${customizeProductRange}">
+    <span class="textfieldlable2">Product Range From:</span>
+    <input type="text" name="prfrom" id="prfrom" size="6" value="${prfrom}">
+    <span class="textfieldlable2">To:</span>
+    <input type="text" name="prto" id="prto" size="6" value="${prto}">
+</c:if>
 <input type="submit" name="customize" value="Customize" onclick="runWaitScreen()">
 </span>
 </form>
@@ -98,11 +111,17 @@
 </c:set>
 <c:set var="customcriteria" value="${customdate}"/>
 <c:if test="${!empty param.groupid && param.groupid != 0}">
-<c:set var="sgroupslist" value="${pss:getContainedSellerGroups(param.groupid, sgroups)}"/>
-<c:set var="customsgroup">and seller.sellergroupID IN (${fn:join(sgroupslist, ",")})</c:set>
-<c:set var="customcriteria">${customcriteria} ${customsgroup}</c:set>
+  <c:set var="sgroupslist" value="${pss:getContainedSellerGroups(param.groupid, sgroups)}"/>
+  <c:set var="customsgroup">and seller.sellergroupID IN (${fn:join(sgroupslist, ",")})</c:set>
+  <c:set var="customcriteria">${customcriteria} ${customsgroup}</c:set>
 </c:if>
-
+<c:if test="${!empty prfrom}">
+  <c:set var="customcriteria">${customcriteria} AND saleproduct.num >= ${prfrom}</c:set>
+</c:if>
+<c:if test="${!empty prto}">
+  <c:set var="customcriteria">${customcriteria} AND saleproduct.num <= ${prto}</c:set>
+</c:if>
+      
         <sql:transaction dataSource="${pssdb}">
             <c:if test="${! empty prequery1}">
                 <sql:update var="u">

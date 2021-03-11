@@ -17,6 +17,7 @@
 <psstags:report title="Total Sales by Organization Report"
                 columnNames="Organization,Total Sales,Total Units"
                 columnTypes="text,money,number"
+                customizeProductRange="true"
                 doNotUseOrg="true">
    <jsp:attribute name="query">
         SELECT org.name, sum(custorderitem.quantity * saleproduct.unitprice), 

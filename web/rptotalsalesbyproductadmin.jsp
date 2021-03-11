@@ -16,6 +16,7 @@
 <psstags:report title="Total Sales by Product Report"
                 columnNames="Number,Name,Total Sales,Total Units"
                 columnTypes="text,text,money,number"
+                customizeProductRange="true"
                 doNotUseOrg="true">
    <jsp:attribute name="query">
         SELECT saleproduct.num, saleproduct.name, sum(custorderitem.quantity * saleproduct.unitprice),

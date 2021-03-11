@@ -83,6 +83,7 @@
      <psstags:textfield label="Number" field="num" size="5"/>
      <psstags:textfield label="Unit Price" field="unitprice" size="6"/>
      <psstags:textfield label="Alternate" field="alternate" size="5" note="The product number to be offered as an alternate; 0 means no alternate."/>
+     <psstags:textfield label="Profit" field="prodprofit" size="6" note="The default profit value to be used in sales of this product; blank means sale default will be used."/>
    </psstags:propsform>
  </psstags:tab>
     
