@@ -3,7 +3,7 @@
 <%@tag import="java.util.SortedMap"%>
 <%@tag import="java.text.SimpleDateFormat" %>
 <%@tag import="java.util.Date" %>
-<%@tag import="javax.servlet.jsp.jstl.sql.Result"%>
+<%@tag import="jakarta.servlet.jsp.jstl.sql.Result"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%> 
 <%@taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>

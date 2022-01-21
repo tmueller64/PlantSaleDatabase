@@ -1,4 +1,4 @@
-<%@page import="javax.servlet.jsp.jstl.sql.Result"%>
+<%@page import="jakarta.servlet.jsp.jstl.sql.Result"%>
 <%@page import="java.util.SortedMap"%>
 <%--
  This tag checks the available product inventory based on the values in the 

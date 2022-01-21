@@ -1,6 +1,6 @@
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
-<%@page import="javax.servlet.jsp.jstl.sql.Result"%>
+<%@page import="jakarta.servlet.jsp.jstl.sql.Result"%>
 <%@page import="java.util.SortedMap"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%> 
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>

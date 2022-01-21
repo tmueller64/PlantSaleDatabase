@@ -14,7 +14,7 @@
     <name>getContainedSellerGroups</name>
     <function-class>com.jj.PlantSale</function-class>
     <function-signature>
-        java.lang.String[] getContainedSellerGroups(java.lang.String, javax.servlet.jsp.jstl.sql.Result)
+        java.lang.String[] getContainedSellerGroups(java.lang.String, jakarta.servlet.jsp.jstl.sql.Result)
     </function-signature>
   </function>
 </taglib>
