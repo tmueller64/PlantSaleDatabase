@@ -4,7 +4,7 @@ Database:
 To create the database, do:
 run mysql as root
 CREATE DATABASE plantsale;
-GRANT ALL PRIVILEGES ON plantsale.* TO 'plantsale'@'%' IDENTIFIED BY 'plantsale' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON plantsale.* TO 'plantsale'@'localhost' IDENTIFIED BY 'plantsale' WITH GRANT OPTION;
 then run mysql as:
 mysql -u plantsale -p plantsale 
 (password is "plantsale")

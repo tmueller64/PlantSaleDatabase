@@ -103,7 +103,8 @@ postalcode varchar(10),
 phonenumber varchar(15),
 contactname varchar(50),
 activesaleID INTEGER default '0', 
-PRIMARY KEY (id)
+PRIMARY KEY (id),
+KEY (activesaleID)
 );
 
 drop table if exists user;
@@ -175,7 +176,8 @@ name VARCHAR(30),
 num INTEGER default '0',
 unitprice NUMERIC(8,2) NOT NULL default '0',
 profit FLOAT default '0.0',
-PRIMARY KEY (id)
+PRIMARY KEY (id),
+KEY (num), KEY (saleID)
 );
 
 drop table if exists saleproductorder;
