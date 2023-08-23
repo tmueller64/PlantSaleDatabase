@@ -1,7 +1,7 @@
 <%@page contentType="text/html"%>
 <%@page import="java.text.SimpleDateFormat" %>
 <%@page import="java.util.Date" %>
-<%@page import="jakarta.servlet.jsp.jstl.sql.Result"%>
+<%@page import="javax.servlet.jsp.jstl.sql.Result"%>
 <%@taglib prefix="psstags" tagdir="/WEB-INF/tags" %>
 <%@taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>

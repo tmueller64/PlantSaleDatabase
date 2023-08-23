@@ -337,6 +337,16 @@ table.pssTbl td.pssTblTd {
     border-bottom: 1px solid #81939B;
 }
 
+table.pssTbl td.pssTblTdMsg {
+    font-family: sans-serif;
+    font-size: 10pt;
+    background-color: #ffffff;
+    color: #ffff00;
+    border-top: 1px solid #81939B;
+    border-right: 1px solid #81939B;
+    border-bottom: 1px solid #81939B;
+}
+
 a.pssTblNavLnk:link, a.pssTblNavLnk:visited {
     color: #003399;
     text-decoration: none

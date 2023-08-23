@@ -131,7 +131,8 @@
    <psstags:tab name="Tasks">
    <ul class="tasklist">
     <li><a href="enterorder.jsp">Enter Orders</a></li>
-    <li><a href="sendcustemail.jsp">Send E-Mail to Customers</a> (NOTE: DO NOT USE)</li>
+    <li><a href="importorders.jsp">Import On-line Orders</a></li>
+    <!-- <li><a href="sendcustemail.jsp">Send E-Mail to Customers</a> (NOTE: DO NOT USE)</li> -->
 </ul>
    </psstags:tab>
 
