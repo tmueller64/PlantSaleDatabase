@@ -30,6 +30,15 @@
             document.getElementById("itemcheckbox_" + orderId).disabled = false;
         }
     }
+    
+    function selectUnmatched(unmatchedSellerId) {
+        var selects = document.getElementsByTagName("select");
+        for (i = 0; i < selects.length; i++) {
+            selects[i].value = unmatchedSellerId;
+            enableIfSellerSet(selects[i].id.replace("seller_", ""))
+        }
+        return false;
+    }
 </script>
 
 <c:if test="${empty currentSaleId}">
@@ -82,18 +91,23 @@
     Map<String, Integer> sellers = new HashMap<String, Integer>(); 
     Map<String, Integer> sellersPrompt = new TreeMap<String, Integer>();
     request.setAttribute("sellersPrompt", sellersPrompt);
+    request.getSession().setAttribute("unmatchedSellerId", null);
 %>
 <c:forEach var="p" items="${r.rowsByIndex}">
     <c:set var="sellerId" value="${p[0]}"/>
     <c:set var="firstName" value="${p[1]}"/>
     <c:set var="lastName" value="${p[2]}"/>
     <%
-        sellers.put((String)pageContext.getAttribute("firstName") + " " +
-                (String)pageContext.getAttribute("lastName"), 
-                (Integer)pageContext.getAttribute("sellerId"));
-        sellersPrompt.put((String)pageContext.getAttribute("lastName") + ", " +
-                (String)pageContext.getAttribute("firstName"), 
-                (Integer)pageContext.getAttribute("sellerId"));
+        String firstName = (String)pageContext.getAttribute("firstName");
+        String lastName = (String)pageContext.getAttribute("lastName");
+        Integer sellerId = (Integer)pageContext.getAttribute("sellerId");
+        sellers.put(firstName + " " + lastName, sellerId);
+        if ("Unmatched".equals(firstName) && "Seller".equals(lastName)) {
+            sellersPrompt.put(" Unmatched Seller", sellerId);
+            request.getSession().setAttribute("unmatchedSellerId", sellerId);
+        } else {
+            sellersPrompt.put(lastName + ", " + firstName, sellerId);
+        }
     %>
 </c:forEach>
 
@@ -131,7 +145,7 @@
     <c:set var="tid" value="${p[0]}"/>
     <%
         String tid = (String)pageContext.getAttribute("tid");
-        existingTIDs.add(tid.replaceAll("TID: ", ""));
+        existingTIDs.add(tid.replaceAll("TID: ", "").replaceAll(" .*$", ""));
     %>
 </c:forEach>
 
@@ -168,6 +182,7 @@
             }
         });
     
+    Boolean showSelectUnmatchedButton = Boolean.FALSE;
     if (csvParser != null) {
         CSVRecord header = null;
         for (CSVRecord record : csvParser) {
@@ -184,10 +199,14 @@
                 alreadyEnteredOrders++;
                 continue; 
             }
+            if (oi.getSellerId() == null) {
+                showSelectUnmatchedButton = Boolean.TRUE;
+            }
             newOrderInfo.put("" + oi.getId(), oi);
         }
     }
     int newOrders = newOrderInfo.size();
+    pageContext.setAttribute("showSelectUnmatchedButton", showSelectUnmatchedButton);
     request.getSession().setAttribute("newOrderInfo", newOrderInfo);
 %>
 
@@ -217,7 +236,11 @@
 </th>
             <th class="pssTblColHdr">Date</th>
             <th class="pssTblColHdr">Customer</th>
-            <th class="pssTblColHdr">Seller</th>
+            <th class="pssTblColHdr">Seller
+                <c:if test="${showSelectUnmatchedButton && not empty unmatchedSellerId}">
+                    <button type="button" onclick="selectUnmatched('${unmatchedSellerId}')">Select Unmatched</button>
+                </c:if>
+            </th>
             <th class="pssTblColHdr">Transaction ID</th>
             <th class="pssTblColHdr">Order Amount</th>
         </th>
@@ -234,7 +257,7 @@
                     <c:if test="${empty order.custId}"><b>(new)</b> </c:if>
                     ${order.firstName} ${order.lastName}, ${order.address}, ${order.city} ${order.state} ${order.zip}, ${order.email}, ${order.phone}
                 </td>
-                <td class="pssTblTd">${order.sellerName}</td>
+                <td class="pssTblTd" ${order.sellerId == null && order.error == null ? 'style="color: red"' : ""}>${order.sellerName}</td>
                 <td class="pssTblTd">${order.transactionId}</td>
                 <td class="pssTblTd" align="right">$${order.totalSale}</td>
             </tr>

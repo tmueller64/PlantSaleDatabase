@@ -132,10 +132,14 @@
           </c:otherwise>
         </c:choose>
 
+        <c:set var="enteredSeller" value=""/>
         <c:choose>
             <c:when test="${order.sellerId == null}">
                 <c:set var="sellerIdParam" value="seller_${order.id}"/>
                 <c:set var="sellerId" value="${param[sellerIdParam]}"/>
+                <c:if test="${sellerId == unmatchedSellerId}">
+                    <c:set var="enteredSeller" value=" Seller: ${order.sellerName}"/>
+                </c:if>
             </c:when>    
             <c:otherwise>
                 <c:set var="sellerId" value="${order.sellerId}"/>
@@ -149,7 +153,7 @@
            <sql:param value="${sellerId}"/>
            <sql:param value="${currentSaleId}"/>
            <sql:param value="${order.date}"/>
-           <sql:param value="TID: ${order.transactionId}"/>
+           <sql:param value="TID: ${order.transactionId}${enteredSeller}"/>
            <sql:param value="0"/>
         </sql:update>       
         <sql:query var="r" sql="select max(id) from custorder;"/>
