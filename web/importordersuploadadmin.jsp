@@ -56,7 +56,7 @@
 </sql:query>
 <c:set var="sale" value="${saleq.rows[0]}"/>
 
-<psstags:breadcrumb title="Import On-line Orders for ${sale.name}" page="importorders.jsp"/>
+<psstags:breadcrumb title="Import On-line Orders for ${sale.name}" page="importordersadmin.jsp"/>
 
 
 <%-- Read saleproduct data --%>
@@ -90,8 +90,10 @@
 <% 
     Map<String, Integer> sellers = new HashMap<String, Integer>(); 
     Map<String, Integer> sellersPrompt = new TreeMap<String, Integer>();
+    Map<Integer, String> sellerIds = new HashMap<Integer, String>();
     request.setAttribute("sellersPrompt", sellersPrompt);
     request.getSession().setAttribute("unmatchedSellerId", null);
+    request.getSession().setAttribute("sellerIds", sellerIds);
 %>
 <c:forEach var="p" items="${r.rowsByIndex}">
     <c:set var="sellerId" value="${p[0]}"/>
@@ -102,6 +104,7 @@
         String lastName = (String)pageContext.getAttribute("lastName");
         Integer sellerId = (Integer)pageContext.getAttribute("sellerId");
         sellers.put(firstName + " " + lastName, sellerId);
+        sellerIds.put(sellerId, firstName + " " + lastName);
         if ("Unmatched".equals(firstName) && "Seller".equals(lastName)) {
             sellersPrompt.put(" Unmatched Seller", sellerId);
             request.getSession().setAttribute("unmatchedSellerId", sellerId);
@@ -226,7 +229,7 @@
     able to confirm the order. Orders with other errors cannot be confirmed until
     the missing or incorrect information is updated.</p>
     
-    <form name="DataTable" action="importordersenter.jsp" method = "POST">
+    <form name="DataTable" action="importordersenteradmin.jsp" method = "POST">
         
     <table class="pssTbl" title="New Orders" summary="New Orders" id="DataTableTbl">
         <tr>
@@ -263,13 +266,13 @@
             </tr>
             <c:if test="${order.error != null}">
                 <tr>
-                    <td class="pssTblTdMsg"></td>
+                    <td class="pssTblTdSel"></td>
                     <td class="pssTblTdMsg" style="color: red" colspan="5">${order.error}</td>
                 </tr>
             </c:if>
             <c:if test="${order.sellerId == null && order.error == null}">
                 <tr>
-                    <td class="pssTblTdMsg"></td>
+                    <td class="pssTblTdSel"></td>
                     <td class="pssTblTdMsg" style="color: red" colspan="2">Unable to identify seller in previous row from uploaded data:</td>
                     <td class="pssTblTdMsg" colspan="3">
                         <select id="seller_${order.id}" name="seller_${order.id}" size="2" onchange="javascript: enableIfSellerSet('${order.id}')">

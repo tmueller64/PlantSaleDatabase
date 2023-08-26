@@ -1,5 +1,5 @@
 <%@page import="javax.servlet.jsp.jstl.sql.Result"%>
-<%@page import="java.util.SortedMap"%>
+<%@page import="java.util.*"%>
 <%--
  This tag checks the available product inventory based on the values in the 
  temp{$tid}_updateorder table and sets errormsg if it
@@ -8,7 +8,7 @@
 --%>
 <c:set var="errormsg" scope="session" value=""/>
 <sql:query var="checkInv">
-        SELECT product.id, product.num as num, product.name, product.alternate, quantity
+        SELECT saleproduct.id as id, product.num as num, product.name, product.alternate, quantity
             FROM product, saleproduct
             INNER JOIN 
                 (SELECT saleproductID, sum(quantity) as quantity FROM temp${tid}_updateorder 
@@ -18,29 +18,34 @@
                   product.remaininginventory >= 0 AND
                   product.remaininginventory < updateorder.quantity
   </sql:query>
-<%
+<% {
     Result checkInv = (Result)pageContext.getAttribute("checkInv");
     if (checkInv.getRowCount() > 0) {
         StringBuffer msg = new StringBuffer();
-        msg.append("The submitted order exceeds the available inventory for the following product");
+        msg.append("The submission exceeds the available inventory for the following product" +
+                    (checkInv.getRowCount() > 1 ? "s" : ""));
         if (checkInv.getRowCount() > 1) {
             msg.append("s");
         }
         msg.append("\n<br>\n");
+        List<Integer> oversoldProducts = new ArrayList<Integer>();
         for (SortedMap row : checkInv.getRows()) {
             String pnum = (String)row.get("num");
+            oversoldProducts.add((Integer)row.get("id"));
             int alt = (Integer)row.get("alternate");
             String name = (String)row.get("name");
             msg.append("<br>" + pnum + ". " + name + ".");
             if (alt != 0) {
-                msg.append("  Suggested alternate is product " + alt + ".");
+                msg.append(" Suggested alternate is product " + alt + ".");
             }
             msg.append("\n");
         }
         msg.append("\n");
         session.setAttribute("errormsg", msg.toString());
+        session.setAttribute("oversoldProducts", oversoldProducts);
     }
-%>
+} %>
+
 <c:if test="${empty errormsg}">
     <sql:update var="updateInv">
         UPDATE product oldproduct

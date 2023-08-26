@@ -226,7 +226,8 @@ Total: <input type="text" name="total" value="0.00" size="10" onfocus="document.
 <table border="0" width="100%">
 <tr valign="top">
 <td class="textfieldlabel">Special Request:</td>
-<td class="textfieldvalue"><input type="text" name="srequest" size="45" value="${order.specialrequest}"></td>
+<td class="textfieldvalue"><input type="text" name="srequest" size="45" value="${order.specialrequest}"
+       <c:if test="${fn:startsWith(order.specialrequest, 'TID:')}">readonly</c:if> ></td>
 </tr>
 <tr valign="top">
 <td class="textfieldlabel">Donation:</td>

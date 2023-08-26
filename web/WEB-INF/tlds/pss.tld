@@ -17,4 +17,10 @@
         java.lang.String[] getContainedSellerGroups(java.lang.String, javax.servlet.jsp.jstl.sql.Result)
     </function-signature>
   </function>
+  <function>
+        <name>contains</name>
+        <function-class>com.jj.PlantSale</function-class>
+        <function-signature>boolean contains(java.util.List, java.lang.Integer)
+        </function-signature>
+    </function>
 </taglib>

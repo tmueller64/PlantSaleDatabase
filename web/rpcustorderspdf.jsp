@@ -29,7 +29,8 @@ Font hdr2font = FontFactory.getFont(FontFactory.HELVETICA, 14, Font.BOLD);
           saleproduct.num, custorderitem.quantity, 
           CONCAT(saleproduct.name, '') as prodname, 
           custorderitem.quantity * saleproduct.unitprice as pcost,
-          CONCAT(org.name, '') as orgname
+          CONCAT(org.name, '') as orgname,
+          custorder.specialrequest as specialrequest
      FROM custorderitem, custorder, saleproduct, customer, seller, org
      WHERE custorder.saleID = ? AND
            custorder.sellerID = seller.id AND
@@ -70,6 +71,7 @@ Font hdr2font = FontFactory.getFont(FontFactory.HELVETICA, 14, Font.BOLD);
 /><c:set var="custphone" value="${rqr.phonenumber}"
 /><c:set var="sellername" value="${rqr.sname}"
 /><c:set var="orgname" value="${rqr.orgname}"
+/><c:set var="specialrequest" value="${rqr.specialrequest}"
 /><%
     pp = new Paragraph((String)pageContext.getAttribute("orgname") + " Seed Order", hdrfont);
     pp.setAlignment(Paragraph.ALIGN_CENTER);
@@ -81,6 +83,7 @@ Font hdr2font = FontFactory.getFont(FontFactory.HELVETICA, 14, Font.BOLD);
     document.add(new Paragraph((String)pageContext.getAttribute("custphone")));
     document.add(new Paragraph("Seller: " + (String)pageContext.getAttribute("sellername")));
     document.add(new Paragraph("Order date: " + pageContext.getAttribute("orderdate").toString()));
+    document.add(new Paragraph("Special Request: " + pageContext.getAttribute("specialrequest")));
     document.add(new Paragraph(" ")); // blank line before table
     pp = new Paragraph("--------------------------------------------------------------------------------------------------");
     pp.setAlignment(Paragraph.ALIGN_CENTER);

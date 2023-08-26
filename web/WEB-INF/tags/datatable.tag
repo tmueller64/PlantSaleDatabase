@@ -66,27 +66,27 @@
 </c:if>
 
 <sql:transaction dataSource="${pssdb}">
-<c:set var="countfield" value="0"/>
-<c:set var="counttable" value=""/>
-<c:if test="${!empty limitdeletetable}">
-    <sql:update var="s">
-        CREATE TABLE temp${tid}_limitdel ( id INTEGER, count INTEGER, PRIMARY KEY (id) );
-    </sql:update>
-    <c:forEach var="c" items="${fn:split(limitdeletetable, ',')}">
+    <c:set var="countfield" value="0"/>
+    <c:set var="counttable" value=""/>
+    <c:if test="${!empty limitdeletetable}">
         <sql:update var="s">
-            REPLACE INTO temp${tid}_limitdel SELECT ${table}.id,COUNT(${c}.id) as count
-            FROM ${table},${c} WHERE ${table}.${limitdeletekey} = ${c}.${limitdeletetablekey} GROUP BY ${table}.id HAVING count > 0 ;
+            CREATE TABLE temp${tid}_limitdel ( id INTEGER, count INTEGER, PRIMARY KEY (id) );
         </sql:update>
-    </c:forEach>
-    <c:set var="countfield" value="count"/>
-    <c:set var="counttable" value="LEFT JOIN temp${tid}_limitdel ON ${table}.id = temp${tid}_limitdel.id"/>
-</c:if>
-        <c:if test="${! empty param.checkDisplayHidden}">
-            <c:set var="filter" value="${filter} ${hiddenfilter}"/>
-        </c:if>
-<sql:query var="r">
-    select ${countfield},${table}.id,${columns} from ${table} ${counttable} ${filter} ${order} 
-</sql:query>
+        <c:forEach var="c" items="${fn:split(limitdeletetable, ',')}">
+            <sql:update var="s">
+                REPLACE INTO temp${tid}_limitdel SELECT ${table}.id,COUNT(${c}.id) as count
+                FROM ${table},${c} WHERE ${table}.${limitdeletekey} = ${c}.${limitdeletetablekey} GROUP BY ${table}.id HAVING count > 0 ;
+            </sql:update>
+        </c:forEach>
+        <c:set var="countfield" value="count"/>
+        <c:set var="counttable" value="LEFT JOIN temp${tid}_limitdel ON ${table}.id = temp${tid}_limitdel.id"/>
+    </c:if>
+    <c:if test="${! empty param.checkDisplayHidden}">
+        <c:set var="filter" value="${filter} ${hiddenfilter}"/>
+    </c:if>
+    <sql:query var="r">
+        select ${countfield},${table}.id,${columns} from ${table} ${counttable} ${filter} ${order} 
+    </sql:query>
     <sql:update var="s">
         DROP TABLE IF EXISTS temp${tid}_limitdel;
     </sql:update>

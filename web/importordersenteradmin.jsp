@@ -35,7 +35,7 @@
 </sql:query>
 <c:set var="sale" value="${saleq.rows[0]}"/>
 
-<psstags:breadcrumb title="Import On-line Orders for ${sale.name}" page="importorders.jsp"/>
+<psstags:breadcrumb title="Import On-line Orders for ${sale.name}" page="importordersadmin.jsp"/>
 
 <c:if test="${!empty errormsg}">
      <div class=errorMessage><span>${errormsg}</span></div>
@@ -44,10 +44,9 @@
 <psstags:showinfomsg/>
 
 <h2>On-line Order Import Results</h2>
-<c:set var="enteredOrderCount" value="0"/>
 
 <sql:transaction dataSource="${pssdb}">   
-    
+
     <sql:update var="s">
         DROP TABLE IF EXISTS temp${tid}_updateorder;
     </sql:update> 
@@ -68,18 +67,113 @@
     <sql:update var="s">
             DROP TABLE IF EXISTS temp${tid}_updateorder;
     </sql:update>   
-            
-<c:choose>
-  <c:when test="${not empty errormsg}">
-      <div class=errorMessage><span>${errormsg}</span></div>
-     <c:set var="errormsg" scope="session" value=""/>
-  </c:when>
-  <c:otherwise>
+
+    <%-- Try to enter orders that do not have products that are over inventory 
+         by detected and removing those orders that do. --%>
+    <c:set var="ordersToEnter" value="${paramValues.itemcheckbox}"/>
+    <c:if test="${not empty errormsg}">
+        <div class=errorMessage><span>${errormsg}</span></div>
+        <c:set var="errormsg" scope="session" value=""/>
+        <sql:update var="s">
+            DROP TABLE IF EXISTS temp${tid}_updateorder;
+        </sql:update> 
+        <sql:update var="s">
+            CREATE TABLE temp${tid}_updateorder ( saleproductID INTEGER, quantity INTEGER );
+        </sql:update>
+        <p>Oversold Orders (not entered)</p>
+        <c:set var="unenteredOrderCount" value="0"/>
+        <table class="pssTbl" title="Oversold Orders" summary="Oversold Orders" id="DataTableTbl">
+            <tr>
+                <th class="pssTblColHdr">Date</th>
+                <th class="pssTblColHdr">Customer</th>
+                <th class="pssTblColHdr">Seller</th>
+                <th class="pssTblColHdr">Transaction ID</th>
+                <th class="pssTblColHdr">Order Amount</th>
+            </th>
+        <% 
+           List<String> ordersToEnter = new ArrayList<String>(); 
+           pageContext.setAttribute("ordersToEnter", ordersToEnter);
+        %>
+        <c:forEach var="i" items="${paramValues.itemcheckbox}">
+            <c:set var="order" value="${newOrderInfo[i]}"/>
+            <c:set var="ok" value="true"/>
+            <c:forEach var="product" items="${order.products}">
+                <c:if test="${fn:contains(oversoldProducts, product.id)}">
+                    <c:set var="ok" value="false"/>
+                </c:if>
+            </c:forEach>
+            <c:choose>
+                <c:when test="${ok == 'true'}">
+                    <c:forEach var="product" items="${order.products}">
+                        <sql:update var="updateCount">
+                            INSERT INTO temp${tid}_updateorder (saleproductID, quantity) VALUES (?, ?);
+                              <sql:param value="${product.id}"/>
+                              <sql:param value="${product.quantity}"/>
+                        </sql:update>  
+                    </c:forEach>
+                    <% ordersToEnter.add((String)pageContext.getAttribute("i")); %>
+                </c:when>
+                <c:otherwise>
+                    <c:set var="unenteredOrderCount" value="${unenteredOrderCount + 1}"/>
+                    <c:choose>
+                        <c:when test="${order.sellerId == null}">
+                            <c:set var="sellerIdParam" value="seller_${order.id}"/>
+                            <c:set var="sellerId" value="${param[sellerIdParam]}"/>
+                        </c:when>    
+                        <c:otherwise>
+                            <c:set var="sellerId" value="${order.sellerId}"/>
+                        </c:otherwise>
+                    </c:choose>
+                    <tr>
+                        <td class="pssTblTd">${order.date}</td>
+                        <td class="pssTblTd">
+                            ${order.firstName} ${order.lastName}, ${order.address}, ${order.city} ${order.state} ${order.zip}, ${order.email}, ${order.phone}
+                        </td>
+                        <td class="pssTblTd">${sellerIds[sellerId]}
+                            <c:if test="${sellerId == unmatchedSellerId}">Unmatched Seller (${order.sellerName})</c:if>
+                        </td>
+                        <td class="pssTblTd">${order.transactionId}</td>
+                        <td class="pssTblTd" align="right">$${order.totalSale}</td>
+                    </tr>
+                </c:otherwise>
+            </c:choose>
+        </c:forEach>
+        </table>
+                    
+        <%@include file="/WEB-INF/jspf/checkandupdateinv.jspf"%>   
+        <sql:update var="s">
+                DROP TABLE IF EXISTS temp${tid}_updateorder;
+        </sql:update>   
+        <p>Did not enter ${unenteredOrderCount} oversold on-line order${unenteredOrderCount != 1 ? "s":""}.</p>
+    </c:if>
+
+    <c:choose>
+      <c:when test="${not empty errormsg}">
+            <div class=errorMessage>
+                <p><b>ERROR:</b> Inventory exceeded even after ignoring orders that cause inventory to be exceeded. 
+                    No orders entered.</p>
+                <span>${errormsg}</span></div>
+            <c:set var="errormsg" scope="session" value=""/>
+      </c:when>
+      
+      <c:otherwise>
+  
    <div>
     <% 
         Map<String, Integer> newCustomers = new HashMap<String, Integer>(); 
     %>
-    <c:forEach var="i" items="${paramValues.itemcheckbox}">
+    <c:set var="enteredOrderCount" value="0"/>
+    <p>Entered Orders</p>
+    <table class="pssTbl" title="Entered Orders" summary="Entered Orders" id="DataTableTbl">
+        <tr>
+            <th class="pssTblColHdr">Date</th>
+            <th class="pssTblColHdr">Customer</th>
+            <th class="pssTblColHdr">Seller</th>
+            <th class="pssTblColHdr">Transaction ID</th>
+            <th class="pssTblColHdr">Order Amount</th>
+        </th>
+
+    <c:forEach var="i" items="${ordersToEnter}">
         <c:set var="order" value="${newOrderInfo[i]}"/>
         <%
             OrderInfo order = (OrderInfo)pageContext.getAttribute("order");
@@ -168,12 +262,26 @@
             </sql:update>
         </c:forEach>
         <c:set var="enteredOrderCount" value="${enteredOrderCount + 1}"/>
+        
+        <tr>
+            <td class="pssTblTd">${order.date}</td>
+            <td class="pssTblTd">
+                ${order.firstName} ${order.lastName}, ${order.address}, ${order.city} ${order.state} ${order.zip}, ${order.email}, ${order.phone}
+            </td>
+            <td class="pssTblTd">${sellerIds[sellerId]}
+                <c:if test="${sellerId == unmatchedSellerId}">Unmatched Seller (${order.sellerName})</c:if>
+            </td>
+            <td class="pssTblTd">${order.transactionId}</td>
+            <td class="pssTblTd" align="right">$${order.totalSale}</td>
+        </tr>
+            
     </c:forEach>
-    Entered ${enteredOrderCount} on-line order${enteredOrderCount != 1 ? "s":""}.
+    </table>
+    <p>Entered ${enteredOrderCount} on-line order${enteredOrderCount != 1 ? "s":""}.</p>
   </div>
   </c:otherwise>
-      
 </c:choose>
+
 
 </sql:transaction>  
 

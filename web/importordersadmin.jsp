@@ -33,7 +33,7 @@
 </sql:query>
 <c:set var="sale" value="${saleq.rows[0]}"/>
 
-<psstags:breadcrumb title="Import On-line Orders for ${sale.name}" page="importorders.jsp"/>
+<psstags:breadcrumb title="Import On-line Orders for ${sale.name}" page="importordersadmin.jsp"/>
 
 <c:if test="${!empty errormsg}">
      <div class=errorMessage><span>${errormsg}</span></div>
@@ -43,7 +43,7 @@
 
 <div class="orderform">
     <p>Click on the "Choose File" button to upload the on-line orders CSV file. Then click Submit.
-    <form action="importordersupload.jsp" method = "post" enctype = "multipart/form-data">
+    <form action="importordersuploadadmin.jsp" method = "post" enctype = "multipart/form-data">
         <p><input type="file" accept=".csv,text/csv" id="importFile" name="filename" size="50"></p>
         <p><input type="submit" name="submit" value="Submit"></p>
     </form>

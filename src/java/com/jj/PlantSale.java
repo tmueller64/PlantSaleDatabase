@@ -60,6 +60,10 @@ public class PlantSale {
         return sgsstr;
     }
     
+    public static boolean contains(List<Integer> list, Integer value) {
+        return list.contains(value);
+    }
+    
     /* 
      * Returns an OrderInfo that contains information about the imported order.
     */
@@ -123,7 +127,8 @@ public class PlantSale {
             if (order.getSellerId() == null || order.getSellerId() == 0) {
                 String foundName = null;
                 for (String name : sellers.keySet()) {
-                    if (name.toLowerCase().contains(sellerStr.toLowerCase())) {
+                    if (name.toLowerCase().contains(sellerStr.toLowerCase()) ||
+                        sellerStr.toLowerCase().contains(name.toLowerCase())) {
                         if (foundName == null) {
                             foundName = name;
                         } else {

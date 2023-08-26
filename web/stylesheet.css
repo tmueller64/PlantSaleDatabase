@@ -7,6 +7,10 @@ h2 {
    margin-left: 3em
 }
 
+input[readonly] {
+  background-color: lightgray;
+}
+
 .list-header {
    background-color: #eeeeee;
    font-size: larger;
