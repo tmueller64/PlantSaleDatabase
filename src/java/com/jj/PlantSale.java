@@ -37,6 +37,23 @@ public class PlantSale {
         return c * b < a ? c + 1 : c;
     }
     
+    public static String getNewUserName(Result users) {
+        int rowCount = users.getRowCount();
+        if (rowCount == 0) {
+            return "user1";
+        }
+        SortedMap[] rows = users.getRows();
+        Set<String> existingUserNames = new HashSet<>();
+        for (SortedMap row : rows) {
+            existingUserNames.add((String)row.get("username"));
+        }
+        int uid = 1;
+        while (existingUserNames.contains("user" + uid)) {
+            uid++;
+        }
+        return "user" + uid;
+    }
+    
     public static String[] getContainedSellerGroups(String groupid, Result sgroups) {
         Integer sgroup = new Integer(groupid);
         SortedMap[] rows = sgroups.getRows();

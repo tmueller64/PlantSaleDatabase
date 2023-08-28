@@ -3,6 +3,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%> 
 <%@taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
 <%@taglib prefix="psstags" tagdir="/WEB-INF/tags" %> 
+<%@taglib prefix="pss" uri="/WEB-INF/tlds/pss.tld" %>
 <%@include file="/WEB-INF/jspf/dbsrc.jspf" %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
@@ -59,11 +60,15 @@
  </psstags:tab>
 
    <psstags:tab name="Users">
+      <sql:query var="users" dataSource="${pssdb}">
+        select username from user where username like 'user%';
+      </sql:query>
+      <c:set var="newUsername" value="${pss:getNewUserName(users)}"/>
     <psstags:datatable title="Users"
     table="user"
     filter="where orgID = ${currentOrgId}"
     order="ORDER BY username"
-    initialValues="(orgID) VALUES (${currentOrgId})"
+    initialValues="(orgID, username) VALUES (${currentOrgId}, '${newUsername}')"
     columnNames="Username,Role"
     columns="username,role"
     itemeditpage="useredit.jsp"/>
@@ -162,12 +167,12 @@
 <li><a href="rpemail.jsp" onclick="runWaitScreen()">Customer Email Address Report</a></li>
 <li><a href="rpsbproduct.jsp" onclick="runWaitScreen()">Sales by Product</a></li>
 </ul>
-<h2>Administrator Reports</h2>
 <c:if test="${userrole == 'admin'}">
+<h2>Administrator Reports</h2>
 <ul class="tasklist">
-  <li><a onclick="window.open('rporderextras.jsp');">Print Active Sale Order Information</a><li>
-  <li><a onclick="window.open('rpinvoiceadmin.jsp');">Print Active Sale Invoice</a><li>
-  <li><a href="rpinvoicedetailadmin.jsp" onclick="runWaitScreen()">Active Sale Invoice Detail</a>
+  <li><a onclick="window.open('rporderextras.jsp');">Print Active Sale Order Information</a></li>
+  <li><a onclick="window.open('rpinvoiceadmin.jsp');">Print Active Sale Invoice</a></li>
+  <li><a href="rpinvoicedetailadmin.jsp" onclick="runWaitScreen()">Active Sale Invoice Detail</a></li>
 </ul>
 </c:if>
 </psstags:tab>

@@ -80,7 +80,7 @@
         <sql:update var="s">
             CREATE TABLE temp${tid}_updateorder ( saleproductID INTEGER, quantity INTEGER );
         </sql:update>
-        <p>Oversold Orders (not entered)</p>
+        <h3>Oversold Orders (not entered)</h3>
         <c:set var="unenteredOrderCount" value="0"/>
         <table class="pssTbl" title="Oversold Orders" summary="Oversold Orders" id="DataTableTbl">
             <tr>
@@ -163,7 +163,7 @@
         Map<String, Integer> newCustomers = new HashMap<String, Integer>(); 
     %>
     <c:set var="enteredOrderCount" value="0"/>
-    <p>Entered Orders</p>
+    <h3>Entered Orders</h3>
     <table class="pssTbl" title="Entered Orders" summary="Entered Orders" id="DataTableTbl">
         <tr>
             <th class="pssTblColHdr">Date</th>

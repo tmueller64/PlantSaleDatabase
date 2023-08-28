@@ -11,6 +11,13 @@
     </function-signature>
   </function>
   <function>
+    <name>getNewUserName</name>
+    <function-class>com.jj.PlantSale</function-class>
+    <function-signature>
+      java.lang.String getNewUserName(javax.servlet.jsp.jstl.sql.Result)
+    </function-signature>
+  </function>
+  <function>
     <name>getContainedSellerGroups</name>
     <function-class>com.jj.PlantSale</function-class>
     <function-signature>

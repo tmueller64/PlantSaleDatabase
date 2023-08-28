@@ -40,7 +40,9 @@
        <psstags:textfield label="Password" field="password" size="32"/>
        <psstags:inputfield label="Role">
          <select name="role">
-          <option value="admin" <c:if test="${row['role'] == 'admin'}">selected="true"</c:if>>Administrator</option>
+          <c:if test="${userrole == 'admin'}">
+            <option value="admin" <c:if test="${row['role'] == 'admin'}">selected="true"</c:if>>Administrator</option>
+          </c:if>
           <option value="orgadmin" <c:if test="${row['role'] == 'orgadmin'}">selected="true"</c:if>>Organization Administrator</option>
           <option value="dataentry" <c:if test="${row['role'] == 'dataentry'}">selected="true"</c:if>>Order Data Entry</option>
           <option value="orgreports" <c:if test="${row['role'] == 'orgreports'}">selected="true"</c:if>>Organization Reports</option>
