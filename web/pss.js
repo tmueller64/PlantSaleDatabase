@@ -148,8 +148,12 @@ function checkData(form)
 	alert("The special request field must be less than 255 characters.");
 	return false;
     }
-    if (form.email.value != "" && !form.email.value.match(/^[0-9a-zA-Z._\-]+@[0-9a-zA-Z._\-]+\.[0-9a-zA-Z_\-]+/)) {
+    if (form.email != null && form.email.value != "" && !form.email.value.match(/^[0-9a-zA-Z._\-]+@[0-9a-zA-Z._\-]+\.[0-9a-zA-Z_\-]+/)) {
         alert("Invalid email address. The address must have an @ and may not have spaces or special characters.");
+        return false;
+    }
+    if (!form.donation.value.match(/^[0-9]*(\.[0-9][0-9])?$/)) {
+        alert("The donation field must be a dollar amount (with no $ or other special characters)");
         return false;
     }
     return true;
