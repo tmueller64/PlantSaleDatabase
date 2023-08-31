@@ -1,12 +1,10 @@
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
-<%@page import="javax.servlet.jsp.jstl.sql.Result"%>
+<%@page import="jakarta.servlet.jsp.jstl.sql.Result"%>
 <%@page import="java.util.SortedMap"%>
-<%@page import="java.io.*,java.util.*, javax.servlet.*" %>
-<%@page import="javax.servlet.http.*" %>
-<%@page import="org.apache.commons.fileupload.*" %>
-<%@page import="org.apache.commons.fileupload.disk.*" %>
-<%@page import="org.apache.commons.fileupload.servlet.*" %>
+<%@page import="java.io.*,java.util.*" %>
+<%@page import="org.apache.commons.fileupload2.core.*" %>
+<%@page import="org.apache.commons.fileupload2.jakarta.*" %>
 <%@page import="org.apache.commons.csv.*" %>
 <%@page import="com.jj.*" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%> 
@@ -26,7 +24,7 @@
 <script type="text/javascript">
     function enableIfSellerSet(orderId) {
         document.getElementById("itemcheckbox_" + orderId).disabled = true;
-        if (document.getElementById("seller_" + orderId).value != "0") {
+        if (document.getElementById("seller_" + orderId).value !== "0") {
             document.getElementById("itemcheckbox_" + orderId).disabled = false;
         }
     }
@@ -35,7 +33,7 @@
         var selects = document.getElementsByTagName("select");
         for (i = 0; i < selects.length; i++) {
             selects[i].value = unmatchedSellerId;
-            enableIfSellerSet(selects[i].id.replace("seller_", ""))
+            enableIfSellerSet(selects[i].id.replace("seller_", ""));
         }
         return false;
     }
@@ -66,7 +64,7 @@
     WHERE saleproduct.saleID = ?;
    <sql:param value="${currentSaleId}"/>
 </sql:query>
-<% Map<String, OrderProductInfo> saleProducts = new HashMap<String, OrderProductInfo>(); %>
+<% Map<String, OrderProductInfo> saleProducts = new HashMap<>(); %>
 <c:forEach var="p" items="${r.rowsByIndex}">
     <c:set var="prodId" value="${p[0]}"/>
     <c:set var="prodNum" value="${p[1]}"/>
@@ -88,9 +86,9 @@
    <sql:param value="${currentOrgId}"/>
 </sql:query>
 <% 
-    Map<String, Integer> sellers = new HashMap<String, Integer>(); 
-    Map<String, Integer> sellersPrompt = new TreeMap<String, Integer>();
-    Map<Integer, String> sellerIds = new HashMap<Integer, String>();
+    Map<String, Integer> sellers = new HashMap<>(); 
+    Map<String, Integer> sellersPrompt = new TreeMap<>();
+    Map<Integer, String> sellerIds = new HashMap<>();
     request.setAttribute("sellersPrompt", sellersPrompt);
     request.getSession().setAttribute("unmatchedSellerId", null);
     request.getSession().setAttribute("sellerIds", sellerIds);
@@ -122,7 +120,7 @@
    <sql:param value="${currentOrgId}"/>
 </sql:query>
 <% 
-    Map<String, Integer> customers = new HashMap<String, Integer>(); 
+    Map<String, Integer> customers = new HashMap<>(); 
 %>
 <c:forEach var="p" items="${r.rowsByIndex}">
     <c:set var="customerId" value="${p[0]}"/>
@@ -142,7 +140,7 @@
    <sql:param value="${currentSaleId}"/>
 </sql:query>
 <% 
-    Set<String> existingTIDs = new HashSet<String>(); 
+    Set<String> existingTIDs = new HashSet<>(); 
 %>
 <c:forEach var="p" items="${r.rowsByIndex}">
     <c:set var="tid" value="${p[0]}"/>
@@ -158,9 +156,8 @@
     String contentType = request.getContentType();
     if (contentType != null && contentType.indexOf("multipart/form-data") >= 0) {
       int maxFileSize = 5000 * 1024;
-      DiskFileItemFactory factory = new DiskFileItemFactory();
-      factory.setSizeThreshold(maxFileSize);
-      ServletFileUpload upload = new ServletFileUpload(factory);
+      FileItemFactory factory = new DiskFileItemFactory.Builder().get();
+      JakartaServletFileUpload upload = new JakartaServletFileUpload(factory);
       upload.setSizeMax(maxFileSize);
       
       try { 
@@ -178,8 +175,8 @@
     } 
     int importedOrders = 0;
     int alreadyEnteredOrders = 0;
-    Map<String, OrderInfo> newOrderInfo = new TreeMap<String,OrderInfo>(
-        new Comparator<String>() {
+    Map<String, OrderInfo> newOrderInfo = new TreeMap<>(
+        new Comparator<>() {
             public int compare(String s1, String s2) {
                 return Long.compare(Long.valueOf(s1), Long.valueOf(s2));
             }
@@ -234,8 +231,8 @@
     <table class="pssTbl" title="New Orders" summary="New Orders" id="DataTableTbl">
         <tr>
             <th class="pssTblColHdrSel" width="3%" align="center" nowrap="nowrap" scope="col">
-<a href="#" name="SelectAllHref" title="Confirm All Orders" onclick="javascript:var f=document.DataTable;for (i=0; i<f.elements.length; i++) {var e=f.elements[i];if (e.name && e.name.indexOf('itemcheckbox') != -1 && !e.disabled) e.checked=true;} return false;"><img name="SelectAllImage" src="images/check_all.gif" alt="Confirm All Orders" align="top" border="0" height="13" width="15" /></a>
-<a href="#" name="DeselectAllHref" title="Unconfirm All Orders" onclick="javascript:var f=document.DataTable;for (i=0; i<f.elements.length; i++) {var e=f.elements[i];if (e.name && e.name.indexOf('itemcheckbox') != -1) e.checked=false;} return false;"><img name="DeselectAllImage" src="images/uncheck_all.gif" alt="Unconfirm All Orders" align="top" border="0" height="13" width="15" /></a>
+<a href="#" name="SelectAllHref" title="Confirm All Orders" onclick="javascript:var f=document.DataTable;for (i=0; i<f.elements.length; i++) {var e=f.elements[i];if (e.name && e.name.indexOf('itemcheckbox') !== -1 && !e.disabled) e.checked=true;} return false;"><img name="SelectAllImage" src="images/check_all.gif" alt="Confirm All Orders" align="top" border="0" height="13" width="15" /></a>
+<a href="#" name="DeselectAllHref" title="Unconfirm All Orders" onclick="javascript:var f=document.DataTable;for (i=0; i<f.elements.length; i++) {var e=f.elements[i];if (e.name && e.name.indexOf('itemcheckbox') !== -1) e.checked=false;} return false;"><img name="DeselectAllImage" src="images/uncheck_all.gif" alt="Unconfirm All Orders" align="top" border="0" height="13" width="15" /></a>
 </th>
             <th class="pssTblColHdr">Date</th>
             <th class="pssTblColHdr">Customer</th>
@@ -253,7 +250,7 @@
                 <td class="pssTblTdSel" align="center">
                 <input type="checkbox" id="itemcheckbox_${order.id}" name="itemcheckbox" 
                        <c:if test="${order.sellerId == null || order.error != null}">disabled</c:if>
-                       value="${order.id}" class="pssTblCb" onkeypress="javascript: if (event.keyCode == 13) return false" />
+                       value="${order.id}" class="pssTblCb" onkeypress="javascript: if (event.keyCode === 13) return false" />
                 </td>
                 <td class="pssTblTd">${order.date}</td>
                 <td class="pssTblTd">

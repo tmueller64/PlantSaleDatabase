@@ -1,9 +1,8 @@
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
-<%@page import="javax.servlet.jsp.jstl.sql.Result"%>
+<%@page import="jakarta.servlet.jsp.jstl.sql.Result"%>
 <%@page import="java.util.SortedMap"%>
-<%@page import = "java.io.*,java.util.*, javax.servlet.*" %>
-<%@page import = "javax.servlet.http.*" %>
+<%@page import = "java.io.*,java.util.*" %>
 <%@page import="com.jj.*" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%> 
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -91,7 +90,7 @@
                 <th class="pssTblColHdr">Order Amount</th>
             </th>
         <% 
-           List<String> ordersToEnter = new ArrayList<String>(); 
+           List<String> ordersToEnter = new ArrayList<>(); 
            pageContext.setAttribute("ordersToEnter", ordersToEnter);
         %>
         <c:forEach var="i" items="${paramValues.itemcheckbox}">
@@ -160,7 +159,7 @@
   
    <div>
     <% 
-        Map<String, Integer> newCustomers = new HashMap<String, Integer>(); 
+        Map<String, Integer> newCustomers = new HashMap<>(); 
     %>
     <c:set var="enteredOrderCount" value="0"/>
     <h3>Entered Orders</h3>
