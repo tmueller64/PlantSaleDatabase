@@ -285,7 +285,7 @@ function enableCurrentProductGroup() {
           FROM saleproduct WHERE saleID = ${currentSaleId}) AS sp
           ON product.num = sp.num
         LEFT JOIN custorderitem ON sp.saleprodid = custorderitem.saleproductID 
-        GROUP BY product.id 
+        GROUP BY salename, product.id, saleprice, saleprodid
         ORDER BY rightNum(product.num);
     </sql:query>
     <sql:query var="sale">
@@ -417,10 +417,10 @@ After entering the desired amounts, click the Save button to save the changes.
     <c:set var="sjoins">
         LEFT JOIN (SELECT saleproduct.id AS id, sum(expectedquantity) AS trincount FROM saleproduct,transfer
                           WHERE tosaleID = ${currentSaleId} AND transfer.saleproductID = saleproduct.id
-                          GROUP BY num) AS trin on saleproduct.id = trin.id
+                          GROUP BY num, id) AS trin on saleproduct.id = trin.id
         LEFT JOIN (SELECT saleproduct.id AS id, sum(expectedquantity) AS troutcount FROM saleproduct,transfer
                           WHERE fromsaleID = ${currentSaleId} AND transfer.saleproductID = saleproduct.id
-                          GROUP BY num) AS trout on saleproduct.id = trout.id
+                          GROUP BY num, id) AS trout on saleproduct.id = trout.id
         LEFT JOIN (SELECT saleproduct.id AS id, sum(custorderitem.quantity) AS unitsordered FROM saleproduct,custorderitem
                           WHERE saleproduct.saleID = ${currentSaleId} and saleproduct.id = custorderitem.saleproductID
                           GROUP BY saleproduct.id) AS custorder on saleproduct.id = custorder.id

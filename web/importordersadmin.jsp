@@ -1,8 +1,7 @@
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
 <%@page import="java.util.SortedMap"%>
-<%@page import = "java.io.*,java.util.*, javax.servlet.*" %>
-<%@page import = "javax.servlet.http.*" %>
+<%@page import = "java.io.*,java.util.*" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%> 
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>

@@ -4,18 +4,27 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/barbmueller/NetBeansProjects/PlantSaleDatabase/web/enterorder.jsp</file>
             <file>file:/Users/barbmueller/NetBeansProjects/PlantSaleDatabase/web/orgedit.jsp</file>
-            <file>file:/Users/barbmueller/NetBeansProjects/PlantSaleDatabase/src/README.txt</file>
-            <file>file:/Users/barbmueller/NetBeansProjects/PlantSaleDatabase/src/update-schema.sql</file>
-            <file>file:/Users/barbmueller/NetBeansProjects/PlantSaleDatabase/web/WEB-INF/sun-web.xml</file>
-            <file>file:/Users/barbmueller/NetBeansProjects/PlantSaleDatabase/web/index.jsp</file>
-            <file>file:/Users/barbmueller/NetBeansProjects/PlantSaleDatabase/web/WEB-INF/glassfish-web.xml</file>
+            <file>file:/Users/barbmueller/NetBeansProjects/PlantSaleDatabase/web/enterorder.jsp</file>
+            <file>file:/Users/barbmueller/NetBeansProjects/PlantSaleDatabase/web/pss.js</file>
+            <file>file:/Users/barbmueller/NetBeansProjects/PlantSaleDatabase/web/saleedit.jsp</file>
+            <file>file:/Users/barbmueller/NetBeansProjects/PlantSaleDatabase/src/java/com/jj/PlantSale.java</file>
+            <file>file:/Users/barbmueller/NetBeansProjects/PlantSaleDatabase/web/importordersadmin.jsp</file>
+            <file>file:/Users/barbmueller/NetBeansProjects/PlantSaleDatabase/web/importordersuploadadmin.jsp</file>
+            <file>file:/Users/barbmueller/NetBeansProjects/PlantSaleDatabase/src/java/com/jj/OrderInfo.java</file>
+            <file>file:/Users/barbmueller/NetBeansProjects/PlantSaleDatabase/src/java/com/jj/OrderProductInfo.java</file>
+            <file>file:/Users/barbmueller/NetBeansProjects/PlantSaleDatabase/web/WEB-INF/tags/report.tag</file>
+            <file>file:/Users/barbmueller/NetBeansProjects/PlantSaleDatabase/web/stylesheet.css</file>
+            <file>file:/Users/barbmueller/NetBeansProjects/PlantSaleDatabase/web/WEB-INF/jspf/banner.jspf</file>
+            <file>file:/Users/barbmueller/NetBeansProjects/PlantSaleDatabase/web/importordersenteradmin.jsp</file>
+            <file>file:/Users/barbmueller/NetBeansProjects/PlantSaleDatabase/web/editorder.jsp</file>
+            <file>file:/Users/barbmueller/NetBeansProjects/PlantSaleDatabase/web/rpcustorderspdf.jsp</file>
             <file>file:/Users/barbmueller/NetBeansProjects/PlantSaleDatabase/web/WEB-INF/tlds/pss.tld</file>
-            <file>file:/Users/barbmueller/NetBeansProjects/PlantSaleDatabase/src/create-Plantsale.sql</file>
-            <file>file:/Users/barbmueller/NetBeansProjects/PlantSaleDatabase/web/selleredit.jsp</file>
-            <file>file:/Users/barbmueller/NetBeansProjects/PlantSaleDatabase/web/WEB-INF/web.xml</file>
-            <file>file:/Users/barbmueller/NetBeansProjects/PlantSaleDatabase/web/WEB-INF/jspf/dbsrc.jspf</file>
+            <file>file:/Users/barbmueller/NetBeansProjects/PlantSaleDatabase/web/useredit.jsp</file>
+            <file>file:/Users/barbmueller/NetBeansProjects/PlantSaleDatabase/web/WEB-INF/jspf/head.jspf</file>
+            <file>file:/Users/barbmueller/NetBeansProjects/PlantSaleDatabase/web/WEB-INF/tags/datatable.tag</file>
+            <file>file:/Users/barbmueller/NetBeansProjects/PlantSaleDatabase/web/rpcustorders.jsp</file>
+            <file>file:/Users/barbmueller/NetBeansProjects/PlantSaleDatabase/web/rpproductdetailadmin.jsp</file>
             <file>file:/Users/barbmueller/NetBeansProjects/PlantSaleDatabase/web/WEB-INF/jspf/checkandupdateinv.jspf</file>
         </group>
     </open-files>

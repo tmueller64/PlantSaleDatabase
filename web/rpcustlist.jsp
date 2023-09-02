@@ -19,13 +19,13 @@
                 columnNames="Name,Address,City,Zip,Phone"
                 columnTypes="text,text,text,text,text">
    <jsp:attribute name="query">
-        SELECT DISTINCT CONCAT(customer.firstname, ' ', customer.lastname), address, city, postalcode, phonenumber 
+        SELECT DISTINCT CONCAT(customer.lastname, ', ', customer.firstname) AS cname, address, city, postalcode, phonenumber 
             FROM customer, custorder, seller  
             WHERE customer.orgID = ${currentOrgId} and 
                   custorder.customerID = customer.id and
                   custorder.sellerID = seller.id and
                   ${customcriteria}
-            ORDER BY customer.lastname, customer.firstname;
+            ORDER BY cname;
    </jsp:attribute>
 </psstags:report>
 </body>

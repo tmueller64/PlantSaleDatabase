@@ -15,13 +15,11 @@ import java.util.SortedMap;
 import jakarta.servlet.jsp.jstl.sql.Result;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.csv.CSVRecord;
@@ -55,7 +53,7 @@ public class PlantSale {
     }
     
     public static String[] getContainedSellerGroups(String groupid, Result sgroups) {
-        Integer sgroup = new Integer(groupid);
+        Integer sgroup = Integer.valueOf(groupid);
         SortedMap[] rows = sgroups.getRows();
         int rowcount = sgroups.getRowCount();
         ArrayList sgs = new ArrayList();
@@ -200,7 +198,7 @@ public class PlantSale {
         String quanStr = productStr.replaceAll("^.*Quantity: ", "").replaceAll("\\).*$", "");
         opi.setQuantity(Integer.parseInt(quanStr));
         String amtStr = productStr.replaceAll("^.*Amount: ", "").replaceAll(" USD.*$", "");
-        Double price = Double.parseDouble(amtStr);
+        Double price = Double.valueOf(amtStr);
         int priceInt = (int)(price * 100);
         int prodPriceInt = (int)(saleProd.getAmount() * 100);
         if (priceInt != prodPriceInt) {

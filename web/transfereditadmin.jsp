@@ -26,7 +26,7 @@
         </sql:query>
 
         <psstags:breadcrumb title="Transferred Product - ${r.rows[0].name}" page="transfereditadmin.jsp" var="currentTransferId"/>
-
+        
         <psstags:tabset defaultTab="Properties"
    height="700px"
    width="100%"
@@ -47,15 +47,16 @@
                </select>
            </psstags:inputfield>
            <psstags:inputfield label="From Sale">
-               <sql:query var="sq" dataSource="${pssdb}">
+               <sql:query var="saleq" dataSource="${pssdb}">
                    SELECT DISTINCT org.name as oname, sale.name as sname, sale.id as sid
-                        FROM org,sale WHERE org.id = sale.orgID and sale.id != ? ORDER BY org.name, sale.name;
+                        FROM org,sale WHERE org.id = sale.orgID AND org.activesaleID = sale.id AND sale.id != ? 
+                        ORDER BY org.name, sale.name;
                   <sql:param value="${currentSaleId}"/>
                </sql:query>
                <select name="fromsaleID">
                    <option value="0">--Select a sale--</option>
-                   <c:forEach var="s" items="${sq.rows}">
-                       <option value="${s.sid}" <c:if test="${row['fromsaleID'] == s.sid}">selected="true"</c:if>>${s.oname} - ${s.sname}</option>
+                   <c:forEach var="s" items="${saleq.rowsByIndex}">
+                       <option value="${s[2]}" <c:if test="${row['fromsaleID'] == s[2]}">selected="true"</c:if>>${s[0]} - ${s[1]}</option>
                    </c:forEach>
                </select>
            </psstags:inputfield>

@@ -19,14 +19,14 @@
                 columnNames="Customer Name,Phone,Special Request"
                 columnTypes="text,text,text">
    <jsp:attribute name="query">
-        SELECT DISTINCT CONCAT(customer.lastname, ', ', customer.firstname), phonenumber,specialrequest
+        SELECT DISTINCT CONCAT(customer.lastname, ', ', customer.firstname) as cname, phonenumber,specialrequest
             FROM customer, custorder, seller  
             WHERE customer.orgID = ${currentOrgId} and 
                   custorder.customerID = customer.id and
                   custorder.sellerID = seller.id and
                   specialrequest != "" and
                   ${customcriteria}
-            ORDER BY customer.lastname, customer.firstname;
+            ORDER BY cname;
    </jsp:attribute>
 </psstags:report>
 </body>

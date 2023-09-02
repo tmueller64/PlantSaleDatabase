@@ -19,13 +19,13 @@
                 columnNames="Name,Family Name,Seller Group"
                 columnTypes="text,text,text">
    <jsp:attribute name="query">
-        SELECT DISTINCT CONCAT(seller.lastname, ', ', seller.firstname), seller.familyname, sellergroup.name 
+        SELECT DISTINCT CONCAT(seller.lastname, ', ', seller.firstname) as sname, seller.familyname, sellergroup.name 
             FROM seller, custorder, sellergroup
             WHERE seller.orgID = ${currentOrgId} and 
                   seller.sellergroupID = sellergroup.id and
                   custorder.sellerID = seller.id and
                   ${customcriteria}
-            ORDER BY sellergroup.id, seller.lastname, seller.firstname;
+            ORDER BY sellergroup.name, sname;
    </jsp:attribute>
 </psstags:report>
 </body>

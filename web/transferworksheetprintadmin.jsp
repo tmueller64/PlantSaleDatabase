@@ -18,11 +18,11 @@
                 WHERE sale.id = ? and sale.orgID = org.id;
             <sql:param value="${currentSaleId}"/>
         </sql:query>
-        <c:set var="s" value="${sq.rows[0]}"/>
+        <c:set var="s" value="${sq.rowsByIndex[0]}"/>
         
         <div class="report">
             <table>
-                <caption>Transfer Worksheet for ${s.oname} - ${s.sname}</caption>
+                <caption>Transfer Worksheet for ${s[0]} - ${s[1]}</caption>
         
                 <sql:query var="transfers" dataSource="${pssdb}">
                     SELECT saleproduct.num as num, saleproduct.name as pname, 
@@ -73,11 +73,11 @@
                         <th class="pssTblColHdr">From Sale</th>
                         <th class="pssTblColHdr">Actual Transfer (units)</th>
                     </tr>
-                    <c:forEach var="p" items="${transfers.rows}">
+                    <c:forEach var="p" items="${transfers.rowsByIndex}">
                         <tr>
-                            <td style="white-space: nowrap">${p.num}. ${p.pname}</td>
-                            <td style="text-align: right; white-space: nowrap">${p.amt}</td>
-                            <td style="white-space: nowrap">${p.oname} - ${p.sname}</td>
+                            <td style="white-space: nowrap">${p[0]}. ${p[1]}</td>
+                            <td style="text-align: right; white-space: nowrap">${p[2]}</td>
+                            <td style="white-space: nowrap">${p[3]} - ${p[4]}</td>
                             <td style="white-space: nowrap; width: 150px"></td>
                         </tr>
                     </c:forEach>

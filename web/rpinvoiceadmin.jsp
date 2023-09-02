@@ -78,10 +78,10 @@ ${bt.city}, ${bt.state}  ${bt.postalcode}<br>
                               GROUP BY saleproduct.id) AS del ON del.id = saleproduct.id
             LEFT JOIN (SELECT saleproduct.id AS id, sum(expectedquantity) AS trincount FROM saleproduct,transfer
                               WHERE tosaleID = ${activeSaleId} AND transfer.saleproductID = saleproduct.id
-                              GROUP BY num) AS trin ON trin.id = saleproduct.id
+                              GROUP BY num, id) AS trin ON trin.id = saleproduct.id
             LEFT JOIN (SELECT saleproduct.id AS id, sum(expectedquantity) AS troutcount FROM saleproduct,transfer
                               WHERE fromsaleID = ${activeSaleId} AND transfer.saleproductID = saleproduct.id
-                              GROUP BY num) AS trout ON trout.id = saleproduct.id
+                              GROUP BY num, id) AS trout ON trout.id = saleproduct.id
             WHERE saleproduct.saleID = ${activeSaleId}
             ORDER BY rightNum(saleproduct.num);
     </sql:query>
@@ -136,10 +136,10 @@ ${bt.city}, ${bt.state}  ${bt.postalcode}<br>
                         GROUP BY saleproduct.id) AS del ON del.id = saleproduct.id
         LEFT JOIN (SELECT saleproduct.id AS id, sum(expectedquantity) AS trincount FROM saleproduct,transfer
                         WHERE tosaleID = ${activeSaleId} AND transfer.saleproductID = saleproduct.id
-                        GROUP BY num) AS trin ON trin.id = saleproduct.id
+                        GROUP BY num, id) AS trin ON trin.id = saleproduct.id
         LEFT JOIN (SELECT saleproduct.id AS id, sum(expectedquantity) AS troutcount FROM saleproduct,transfer
                         WHERE fromsaleID = ${activeSaleId} AND transfer.saleproductID = saleproduct.id
-                        GROUP BY num) AS trout ON trout.id = saleproduct.id
+                        GROUP BY num, id) AS trout ON trout.id = saleproduct.id
         WHERE saleproduct.saleID = ${activeSaleId}
         ORDER BY rightNum(saleproduct.num);
     </sql:query>

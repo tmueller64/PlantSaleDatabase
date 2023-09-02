@@ -39,7 +39,7 @@ Font hdr2font = FontFactory.getFont(FontFactory.HELVETICA, 14, Font.BOLD);
            custorderitem.saleproductID = saleproduct.id AND
            custorder.customerID = customer.id AND
            rightNum(saleproduct.num) >= rightNum(?) AND rightNum(saleproduct.num) <= rightNum(?)
-       ORDER BY customer.lastname, customer.firstname, custorder.orderdate, custorder.id, rightNum(saleproduct.num);
+       ORDER BY cname, custorder.orderdate, custorder.id, rightNum(saleproduct.num);
    <sql:param value="${currentSaleId}"/>
    <sql:param value="${pnumfrom}"/>
    <sql:param value="${pnumto}"/>

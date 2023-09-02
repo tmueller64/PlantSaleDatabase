@@ -19,14 +19,14 @@
                 columnNames="Email Addresses"
                 columnTypes="text">
    <jsp:attribute name="query">
-        SELECT DISTINCT CONCAT(customer.firstname, ' ', customer.lastname, ' &lt;', customer.email, '&gt;,')
+        SELECT DISTINCT CONCAT(customer.firstname, ' ', customer.lastname, ' &lt;', customer.email, '&gt;,') as cemail
             FROM customer, custorder, seller  
             WHERE customer.orgID = ${currentOrgId} and 
                   custorder.customerID = customer.id and
                   custorder.sellerID = seller.id and
                   email != "" and
                   ${customcriteria}
-            ORDER BY customer.lastname, customer.firstname;
+            ORDER BY cemail;
    </jsp:attribute>
 </psstags:report>
 </body>
