@@ -12,10 +12,9 @@ mysql -u plantsale -p plantsale
 (password is "plantsale")
 
 
-NetBeans Application Server:
+In NetBeans use Tomcat 10 for the app server:
 Admin username: admin
 Admin password: adminadmin
-Admin console running on port 4848
 
 
 Troubleshooting Tips:
@@ -109,3 +108,4 @@ BEGIN
 END;
 $$
 DELIMITER ;
+

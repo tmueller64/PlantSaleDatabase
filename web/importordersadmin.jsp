@@ -42,6 +42,15 @@
 
 <div class="orderform">
     <p>Click on the "Choose File" button to upload the on-line orders CSV file. Then click Submit.
+    <sql:query var="sellerq" dataSource="${pssdb}">
+       SELECT id FROM seller WHERE orgId = ? AND firstname = 'Unmatched' AND lastname = 'Seller';
+       <sql:param value="${currentOrgId}"/>
+    </sql:query>
+    <c:if test="${sellerq.rowCount == 0}">
+        <p>To expedite on-line order entry, create a seller named "Unmatched Seller" which can be used as a temporary
+            seller for on-line orders that cannot be matched with an existing seller.</p>
+    </c:if>
+    
     <form action="importordersuploadadmin.jsp" method = "post" enctype = "multipart/form-data">
         <p><input type="file" accept=".csv,text/csv" id="importFile" name="filename" size="50"></p>
         <p><input type="submit" name="submit" value="Submit"></p>
