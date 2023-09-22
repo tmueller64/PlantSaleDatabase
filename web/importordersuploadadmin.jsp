@@ -176,7 +176,7 @@
     int importedOrders = 0;
     int alreadyEnteredOrders = 0;
     Map<String, OrderInfo> newOrderInfo = new TreeMap<>(
-        new Comparator<>() {
+        new Comparator<String>() {
             public int compare(String s1, String s2) {
                 return Long.compare(Long.valueOf(s1), Long.valueOf(s2));
             }
