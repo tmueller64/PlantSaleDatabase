@@ -108,7 +108,7 @@ public class PlantSale {
        
         Date date;
         try {
-            date = new SimpleDateFormat("M/d/y H:m").parse(dateStr);
+            date = new SimpleDateFormat("y-M-d H:m:s").parse(dateStr);
             order.setDate(new SimpleDateFormat("yyyy-MM-dd").format(date));
         } catch (ParseException ex) {
             order.setError("Order has invalid date.");
@@ -160,8 +160,9 @@ public class PlantSale {
         
         String pi[] = payerInfo.split("Transaction ID: ");
         if (pi.length == 2) {
-            order.setTransactionId(pi[1]);
-            if (existingTIDs.contains(pi[1])) {
+            String tid = pi[1].replaceAll(" .*$", "");
+            order.setTransactionId(tid);
+            if (existingTIDs.contains(tid)) {
                 return null; // this order has aleady been entered
             }
         }
