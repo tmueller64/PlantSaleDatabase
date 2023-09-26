@@ -15,12 +15,14 @@
 
 
 <psstags:report title="Total Sales Report"
-                columnNames="Total Sales,Total Units"
-                columnTypes="money,number"
+                columnNames="Total Sales,Total Units,Orders,On-line Orders"
+                columnTypes="money,number,number,number"
                 doNotUseOrg="true">
    <jsp:attribute name="query">
         SELECT sum(custorderitem.quantity * saleproduct.unitprice), 
-               sum(custorderitem.quantity)
+               sum(custorderitem.quantity),
+               count(distinct custorder.id),
+               count(distinct case when custorder.specialrequest like '%TID%' then custorder.specialrequest else NULL end)
         FROM custorderitem, saleproduct, custorder
         WHERE custorder.id = custorderitem.orderID and 
               custorderitem.saleproductID = saleproduct.id and
