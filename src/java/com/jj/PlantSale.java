@@ -79,11 +79,37 @@ public class PlantSale {
         return list.contains(value);
     }
     
+    private static final String COLUMN_ERROR = "<p>Invalid number of columns (%d) in the input file. The file " +
+            "must have the following 15 columns:</p>" +
+            "<ol>" + 
+            "<li> Submission Date - format: yyyy-mm-dd hh:mm:ss</li>" +
+            "<li> Student's Name for Credit - format: firstname lastname</li>" +
+            "<li> Products - value consists of a list of products followed by a “Total” entry. Each product " + 
+            "starts with a # followed by the product number and a space. The product amount is the number " + 
+            "between “Amount: “ and “ USD”. The product quantity is the number between “Quantity: “ and “)”. " + 
+            "Other data in the product such as the name of the product is ignored. The total amount is the " + 
+            "number between “Total: “ and “ USD” The spaces shown here in quotes are significant. </li>" +
+            "<li> Payer Info - format: must contain “Transaction ID: “ (note the space after the colon). Everything up to the next space after this is considered the transaction ID that is put into the special request field of the order. This field can contain other data before the “Transaction ID: “ text and after the space after the transaction ID.</li>" +
+            "<li> Payer Address - this field is ignored</li>" +
+            "<li> First Name - customer first name</li>" +
+            "<li> Last Name - customer last name</li>" +
+            "<li> E-mail - customer email</li>" +
+            "<li> Street Address - customer address</li>" +
+            "<li> Street Address Line 2 - this field is ignored</li>" +
+            "<li> City - customer city</li>" +
+            "<li> State / Province - customer state</li>" +
+            "<li> Postal / Zip Code - customer zip</li>" +
+            "<li> Country - this field is ignored</li>" +
+            "<li> Customer Phone Number - format: all non-digits are ignored</li>" +
+            "</ol>";
     /* 
      * Returns an OrderInfo that contains information about the imported order.
     */
     public static OrderInfo parseCSVOrderData(CSVRecord record, Map<String, OrderProductInfo> saleProducts,
             Map<String, Integer> sellers, Map<String, Integer> customers, Set<String> existingTIDs) {
+        if (record.size() != 15) {
+            throw new RuntimeException(String.format(COLUMN_ERROR, record.size()));
+        }
         OrderInfo order = new OrderInfo();
         order.setId(record.getRecordNumber());
         // Submission Date,Student's Name for Credit,: Products,: Payer Info,: Payer Address,First Name,Last Name,

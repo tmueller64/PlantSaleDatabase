@@ -184,25 +184,29 @@
     
     Boolean showSelectUnmatchedButton = Boolean.FALSE;
     if (csvParser != null) {
-        CSVRecord header = null;
-        for (CSVRecord record : csvParser) {
-            if (header == null) {
-                header = record;
-                continue;
+        try {
+            CSVRecord header = null;
+            for (CSVRecord record : csvParser) {
+                if (header == null) {
+                    header = record;
+                    continue;
+                }
+                if (record.size() < 4) {
+                    continue;
+                }
+                importedOrders++;
+                OrderInfo oi = PlantSale.parseCSVOrderData(record, saleProducts, sellers, customers, existingTIDs);
+                if (oi == null) {
+                    alreadyEnteredOrders++;
+                    continue; 
+                }
+                if (oi.getSellerId() == null) {
+                    showSelectUnmatchedButton = Boolean.TRUE;
+                }
+                newOrderInfo.put("" + oi.getId(), oi);
             }
-            if (record.size() < 4) {
-                continue;
-            }
-            importedOrders++;
-            OrderInfo oi = PlantSale.parseCSVOrderData(record, saleProducts, sellers, customers, existingTIDs);
-            if (oi == null) {
-                alreadyEnteredOrders++;
-                continue; 
-            }
-            if (oi.getSellerId() == null) {
-                showSelectUnmatchedButton = Boolean.TRUE;
-            }
-            newOrderInfo.put("" + oi.getId(), oi);
+        } catch (Exception e) {
+            request.getSession().setAttribute("errormsg", e.getMessage());
         }
     }
     int newOrders = newOrderInfo.size();
@@ -210,11 +214,15 @@
     request.getSession().setAttribute("newOrderInfo", newOrderInfo);
 %>
 
-
-<c:if test="${!empty errormsg}">
+<c:choose>
+    <c:when test="${!empty errormsg}">
      <div class=errorMessage><span>${errormsg}</span></div>
+     <p><a href="importordersadmin.jsp">Try again.</a><p>
      <c:set var="errormsg" scope="session" value=""/>
-</c:if>
+    </c:when>
+     
+    <c:otherwise>
+           
 <psstags:showinfomsg/>
 <h2>On-line Order Import Confirmation</h2>
 <div class="pssTblMgn">
@@ -287,5 +295,8 @@
     <p><input type="submit" name="submit" value="Enter Confirmed Orders"></p>
     </form>
 </div>
+    </c:otherwise>
+</c:choose>
+
 </body>
 </html>
