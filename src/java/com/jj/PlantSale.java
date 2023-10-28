@@ -80,17 +80,17 @@ public class PlantSale {
     }
     
     private static final String COLUMN_ERROR = "<p>Invalid number of columns (%d) in the input file. The file " +
-            "must have the following 15 columns:</p>" +
+            "must have the following 13 columns:</p>" +
             "<ol>" + 
-            "<li> Submission Date - format: yyyy-mm-dd hh:mm:ss</li>" +
+            "<li> Submission Date - format: yyyy/mm/dd hh:mm:ss</li>" +
             "<li> Student's Name for Credit - format: firstname lastname</li>" +
-            "<li> Products - value consists of a list of products followed by a “Total” entry. Each product " + 
+            "<li> My Products - value consists of a list of products followed by a Total entry and a" +
+            "Transaction ID. Each product " + 
             "starts with a # followed by the product number and a space. The product amount is the number " + 
             "between “Amount: “ and “ USD”. The product quantity is the number between “Quantity: “ and “)”. " + 
             "Other data in the product such as the name of the product is ignored. The total amount is the " + 
-            "number between “Total: “ and “ USD” The spaces shown here in quotes are significant. </li>" +
-            "<li> Payer Info - format: must contain “Transaction ID: “ (note the space after the colon). Everything up to the next space after this is considered the transaction ID that is put into the special request field of the order. This field can contain other data before the “Transaction ID: “ text and after the space after the transaction ID.</li>" +
-            "<li> Payer Address - this field is ignored</li>" +
+            "number between “Total: $“ and “Transaction” The spaces shown here in quotes are significant. " +
+            "The transaction ID is the value between “Transaction ID: ” and “==Payer“</li>" +
             "<li> First Name - customer first name</li>" +
             "<li> Last Name - customer last name</li>" +
             "<li> E-mail - customer email</li>" +
@@ -107,7 +107,7 @@ public class PlantSale {
     */
     public static OrderInfo parseCSVOrderData(CSVRecord record, Map<String, OrderProductInfo> saleProducts,
             Map<String, Integer> sellers, Map<String, Integer> customers, Set<String> existingTIDs) {
-        if (record.size() != 15) {
+        if (record.size() != 13) {
             throw new RuntimeException(String.format(COLUMN_ERROR, record.size()));
         }
         OrderInfo order = new OrderInfo();
@@ -117,24 +117,22 @@ public class PlantSale {
 
         String dateStr = record.get(0);
         String sellerStr = record.get(1).trim();
-        String productsStr = record.get(2);
-        String payerInfo = record.get(3);
-        String payerAddress = record.get(4); // ignored
-        String firstNameStr = record.get(5);
-        String lastNameStr = record.get(6);
-        String emailStr = record.get(7);
-        String addressStr = record.get(8);
-        String address2Str = record.get(9); // ignored
-        String cityStr = record.get(10);
-        String stateStr = record.get(11);
-        String zipStr = record.get(12);
-        String countryStr = record.get(13); // ignored
-        String phoneStr = record.get(14);
+        String productsStr = record.get(2).replaceAll("[\r\n]", "");
+        String firstNameStr = record.get(3);
+        String lastNameStr = record.get(4);
+        String emailStr = record.get(5);
+        String addressStr = record.get(6);
+        String address2Str = record.get(7); // ignored
+        String cityStr = record.get(8);
+        String stateStr = record.get(9);
+        String zipStr = record.get(10);
+        String countryStr = record.get(11); // ignored
+        String phoneStr = record.get(12);
         
        
         Date date;
         try {
-            date = new SimpleDateFormat("y-M-d H:m:s").parse(dateStr);
+            date = new SimpleDateFormat("y/M/d H:m:s").parse(dateStr);
             order.setDate(new SimpleDateFormat("yyyy-MM-dd").format(date));
         } catch (ParseException ex) {
             order.setError("Order has invalid date.");
@@ -184,9 +182,9 @@ public class PlantSale {
             }
         }
         
-        String pi[] = payerInfo.split("Transaction ID: ");
+        String pi[] = productsStr.split("Transaction ID: ");
         if (pi.length == 2) {
-            String tid = pi[1].replaceAll(" .*$", "");
+            String tid = pi[1].replaceAll("==Payer.*$", "");
             order.setTransactionId(tid);
             if (existingTIDs.contains(tid)) {
                 return null; // this order has aleady been entered
@@ -205,7 +203,7 @@ public class PlantSale {
                 order.setError(e.getMessage());
             }
         }
-        String totalStr = productsStr.replaceAll("^.*Total: ", "").replaceAll(" USD.*$", "");
+        String totalStr = productsStr.replaceAll("^.*Total: \\$", "").replaceAll("Transaction.*$", "");
         order.setTotalSale(totalStr);
         
         return order;
