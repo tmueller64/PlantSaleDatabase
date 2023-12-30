@@ -79,64 +79,103 @@ public class PlantSale {
         return list.contains(value);
     }
     
-    private static final String COLUMN_ERROR = "<p>Invalid number of columns (%d) in the input file. The file " +
-            "must have the following 13 columns:</p>" +
-            "<ol>" + 
-            "<li> Submission Date - format: yyyy/mm/dd hh:mm:ss</li>" +
-            "<li> Student's Name for Credit - format: firstname lastname</li>" +
-            "<li> My Products - value consists of a list of products followed by a Total entry and a" +
+    private static final String COLUMN_COUNT_ERROR = "<p>Invalid number of columns (%d) in the input file. The file " +
+            "must have the following columns:</p>";
+    private static final String COLUMN_MISSING_ERROR = "<p>Column %s is missing. Required columns are:</p>";
+    private static final String COLUMN_SPEC = "<ol>" + 
+            "<li><b>Submission Date</b> - format: yyyy/mm/dd hh:mm:ss</li>" +
+            "<li><b>Student Name for Credit</b> - format: firstname lastname</li>" +
+            "<li><b>My Products</b> - value consists of a list of products followed by a Total entry and a" +
             "Transaction ID. Each product " + 
             "starts with a # followed by the product number and a space. The product amount is the number " + 
             "between “Amount: “ and “ USD”. The product quantity is the number between “Quantity: “ and “)”. " + 
-            "Other data in the product such as the name of the product is ignored. The total amount is the " + 
+            "Other data in the product field such as the name of the product is ignored. The total amount is the " + 
             "number between “Total: $“ and “Transaction” The spaces shown here in quotes are significant. " +
-            "The transaction ID is the value between “Transaction ID: ” and “==Payer“</li>" +
-            "<li> First Name - customer first name</li>" +
-            "<li> Last Name - customer last name</li>" +
-            "<li> E-mail - customer email</li>" +
-            "<li> Street Address - customer address</li>" +
-            "<li> Street Address Line 2 - this field is ignored</li>" +
-            "<li> City - customer city</li>" +
-            "<li> State / Province - customer state</li>" +
-            "<li> Postal / Zip Code - customer zip</li>" +
-            "<li> Country - this field is ignored</li>" +
-            "<li> Customer Phone Number - format: all non-digits are ignored</li>" +
+            "The transaction ID is the value between “Transaction ID: ” and “==Payer“. It is possible for this " +
+            "field to be split into two fields: <b>My Products: Products</b> and <b>My Products: Payer Info</b>, with the " +
+            "transaction ID being in the payer info field.</li>" +
+            "<li><b>First Name</b> - customer first name</li>" +
+            "<li><b>Last Name</b> - customer last name</li>" +
+            "<li><b>E-mail</b> - customer email</li>" +
+            "<li><b>Street Address</b> - customer address</li>" +
+            "<li><b>City</b> - customer city</li>" +
+            "<li><b>State / Province</b> - customer state</li>" +
+            "<li><b>Postal / Zip Code</b> - customer zip</li>" +
+            "<li><b>Customer Phone Number</b> - format: all non-digits are ignored</li>" +
             "</ol>";
+    
+    public static ColumnMap parseCSVColumns(CSVRecord record) throws RuntimeException {
+        ColumnMap columnMap = new ColumnMap();
+        columnMap.setDate(findColumn(record, "Submission Date"));
+        columnMap.setSeller(findColumn(record, "Student Name for Credit"));
+        try {
+            columnMap.setTransaction(findColumn(record, "My Products: Payer Info"));
+            columnMap.setProducts(findColumn(record, "My Products: Products"));
+        } catch (RuntimeException e) {
+            columnMap.setProducts(findColumn(record, "My Products"));
+            columnMap.setTransaction(columnMap.getProducts());
+        }
+        columnMap.setFirstName(findColumn(record, "First Name"));
+        columnMap.setLastName(findColumn(record, "Last Name"));
+        columnMap.setEmail(findColumn(record, "E-mail"));
+        columnMap.setAddress(findColumn(record, "Street Address"));
+        columnMap.setCity(findColumn(record, "City"));
+        columnMap.setState(findColumn(record, "State"));
+        columnMap.setZip(findColumn(record, "Zip Code"));
+        columnMap.setPhone(findColumn(record, "Customer Phone Number"));
+        return columnMap;
+    }
+    
+    private static int findColumn(CSVRecord record, String name) throws RuntimeException {
+        String lowerName = name.toLowerCase();
+        for (int i = 0; i < record.size(); i++) {
+            if (record.get(i).toLowerCase().contains(lowerName)) {
+                return i;
+            }
+        }
+        throw new RuntimeException(String.format(COLUMN_MISSING_ERROR, name) + COLUMN_SPEC);
+    }
+    
     /* 
      * Returns an OrderInfo that contains information about the imported order.
     */
-    public static OrderInfo parseCSVOrderData(CSVRecord record, Map<String, OrderProductInfo> saleProducts,
+    public static OrderInfo parseCSVOrderData(ColumnMap columnMap, CSVRecord record, 
+            Map<String, OrderProductInfo> saleProducts,
             Map<String, Integer> sellers, Map<String, Integer> customers, Set<String> existingTIDs) {
-        if (record.size() != 13) {
-            throw new RuntimeException(String.format(COLUMN_ERROR, record.size()));
+        
+        if (record.size() <= columnMap.getMaxColumn()) {
+            throw new RuntimeException(String.format(COLUMN_COUNT_ERROR, record.size()) + COLUMN_SPEC);
         }
         OrderInfo order = new OrderInfo();
         order.setId(record.getRecordNumber());
         // Submission Date,Student's Name for Credit,: Products,: Payer Info,: Payer Address,First Name,Last Name,
         // E-mail,Street Address,Street Address Line 2,City,State / Province,Postal / Zip Code,Country,Customer Phone Number (required)
 
-        String dateStr = record.get(0);
-        String sellerStr = record.get(1).trim();
-        String productsStr = record.get(2).replaceAll("[\r\n]", "");
-        String firstNameStr = record.get(3);
-        String lastNameStr = record.get(4);
-        String emailStr = record.get(5);
-        String addressStr = record.get(6);
-        String address2Str = record.get(7); // ignored
-        String cityStr = record.get(8);
-        String stateStr = record.get(9);
-        String zipStr = record.get(10);
-        String countryStr = record.get(11); // ignored
-        String phoneStr = record.get(12);
+        String dateStr = record.get(columnMap.getDate());
+        String sellerStr = record.get(columnMap.getSeller()).trim();
+        String productsStr = record.get(columnMap.getProducts()).replaceAll("[\r\n]", "");
+        String transactStr = record.get(columnMap.getTransaction()).replaceAll("[\r\n]", "");
+        String firstNameStr = record.get(columnMap.getFirstName());
+        String lastNameStr = record.get(columnMap.getLastName());
+        String emailStr = record.get(columnMap.getEmail());
+        String addressStr = record.get(columnMap.getAddress());
+        String cityStr = record.get(columnMap.getCity());
+        String stateStr = record.get(columnMap.getState());
+        String zipStr = record.get(columnMap.getZip());
+        String phoneStr = record.get(columnMap.getPhone());
         
-       
-        Date date;
-        try {
-            date = new SimpleDateFormat("y/M/d H:m:s").parse(dateStr);
-            order.setDate(new SimpleDateFormat("yyyy-MM-dd").format(date));
-        } catch (ParseException ex) {
+        String dateFormats[] = { "y/M/d H:m:s", "y-M-d H:m:s", "y/M/d", "y-M-d" };
+        for (String dateFormat : dateFormats) {
+            try {
+                Date date = new SimpleDateFormat(dateFormat).parse(dateStr);
+                order.setDate(new SimpleDateFormat("yyyy-MM-dd").format(date));
+                break;
+            } catch (ParseException ex) {
+                continue;
+            }
+        }
+        if (order.getDate() == null) {
             order.setError("Order has invalid date.");
-            Logger.getLogger(PlantSale.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         order.setFirstName(firstNameStr);
@@ -182,9 +221,10 @@ public class PlantSale {
             }
         }
         
-        String pi[] = productsStr.split("Transaction ID: ");
+        String pi[] = transactStr.split("Transaction ID: ");
         if (pi.length == 2) {
-            String tid = pi[1].replaceAll("==Payer.*$", "");
+            String tid = pi[1].replaceAll("==Payer.*$", "")
+                    .replaceAll(" Authorization Code.*$", "");
             order.setTransactionId(tid);
             if (existingTIDs.contains(tid)) {
                 return null; // this order has aleady been entered
@@ -203,7 +243,10 @@ public class PlantSale {
                 order.setError(e.getMessage());
             }
         }
-        String totalStr = productsStr.replaceAll("^.*Total: \\$", "").replaceAll("Transaction.*$", "");
+        String totalStr = productsStr.replaceAll("^.*Total: \\$*", "")
+                .replaceAll("Transaction.*$", "")
+                .replaceAll(" USD.*$", "");
+        
         order.setTotalSale(totalStr);
         
         return order;

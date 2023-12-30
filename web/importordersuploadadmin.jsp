@@ -185,17 +185,17 @@
     Boolean showSelectUnmatchedButton = Boolean.FALSE;
     if (csvParser != null) {
         try {
-            CSVRecord header = null;
+            ColumnMap columnMap = null;
             for (CSVRecord record : csvParser) {
-                if (header == null) {
-                    header = record;
+                if (columnMap == null) {
+                    columnMap = PlantSale.parseCSVColumns(record);
                     continue;
                 }
                 if (record.size() < 4) {
                     continue;
                 }
                 importedOrders++;
-                OrderInfo oi = PlantSale.parseCSVOrderData(record, saleProducts, sellers, customers, existingTIDs);
+                OrderInfo oi = PlantSale.parseCSVOrderData(columnMap, record, saleProducts, sellers, customers, existingTIDs);
                 if (oi == null) {
                     alreadyEnteredOrders++;
                     continue; 
