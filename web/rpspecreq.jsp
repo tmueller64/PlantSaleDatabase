@@ -16,10 +16,10 @@
 
 <psstags:report title="Special Request Report"
                 addRowCount="true"
-                columnNames="Customer Name,Phone,Special Request"
-                columnTypes="text,text,text">
+                columnNames="Order Date,Customer Name,Phone,Seller,Special Request"
+                columnTypes="text,text,text,text,text">
    <jsp:attribute name="query">
-        SELECT DISTINCT CONCAT(customer.lastname, ', ', customer.firstname) as cname, phonenumber,specialrequest
+        SELECT DISTINCT orderdate, CONCAT(customer.lastname, ', ', customer.firstname) as cname, phonenumber,concat(seller.lastname,', ',seller.firstname), specialrequest
             FROM customer, custorder, seller  
             WHERE customer.orgID = ${currentOrgId} and 
                   custorder.customerID = customer.id and
