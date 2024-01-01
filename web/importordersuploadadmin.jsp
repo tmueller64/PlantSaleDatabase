@@ -105,7 +105,7 @@
         sellerIds.put(sellerId.toString(), firstName + " " + lastName);
         if ("Unmatched".equals(firstName) && "Seller".equals(lastName)) {
             sellersPrompt.put(" Unmatched Seller", sellerId);
-            request.getSession().setAttribute("unmatchedSellerId", sellerId);
+            request.getSession().setAttribute("unmatchedSellerId", sellerId.toString());
         } else {
             sellersPrompt.put(lastName + ", " + firstName, sellerId);
         }

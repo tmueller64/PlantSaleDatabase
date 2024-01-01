@@ -120,7 +120,7 @@
                             <c:set var="sellerId" value="${param[sellerIdParam]}"/>
                         </c:when>    
                         <c:otherwise>
-                            <c:set var="sellerId" value="${order.sellerId}"/>
+                            <c:set var="sellerId" value="${''.concat(order.sellerId)}"/>
                         </c:otherwise>
                     </c:choose>
                     <tr>
@@ -235,7 +235,7 @@
                 </c:if>
             </c:when>    
             <c:otherwise>
-                <c:set var="sellerId" value="${order.sellerId}"/>
+                <c:set var="sellerId" value="${''.concat(order.sellerId)}"/>
             </c:otherwise>
         </c:choose>
         
@@ -268,7 +268,7 @@
                 ${order.firstName} ${order.lastName}, ${order.address}, ${order.city} ${order.state} ${order.zip}, ${order.email}, ${order.phone}
             </td>
             <td class="pssTblTd">${sellerIds[sellerId]}
-                <c:if test="${sellerId == unmatchedSellerId}">Unmatched Seller (${order.sellerName})</c:if>
+                <c:if test="${sellerId == unmatchedSellerId}"> (${order.sellerName})</c:if>
             </td>
             <td class="pssTblTd">${order.transactionId}</td>
             <td class="pssTblTd" align="right">$${order.totalSale}</td>
