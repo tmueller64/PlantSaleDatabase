@@ -66,9 +66,9 @@
     <sql:update var="s">
             DROP TABLE IF EXISTS temp${tid}_updateorder;
     </sql:update>   
-
+            
     <%-- Try to enter orders that do not have products that are over inventory 
-         by detected and removing those orders that do. --%>
+         by detecting and removing those orders that do. --%>
     <c:set var="ordersToEnter" value="${paramValues.itemcheckbox}"/>
     <c:if test="${not empty errormsg}">
         <div class=errorMessage><span>${errormsg}</span></div>

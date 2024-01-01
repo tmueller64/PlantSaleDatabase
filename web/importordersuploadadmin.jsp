@@ -88,7 +88,7 @@
 <% 
     Map<String, Integer> sellers = new HashMap<>(); 
     Map<String, Integer> sellersPrompt = new TreeMap<>();
-    Map<Integer, String> sellerIds = new HashMap<>();
+    Map<String, String> sellerIds = new HashMap<>();
     request.setAttribute("sellersPrompt", sellersPrompt);
     request.getSession().setAttribute("unmatchedSellerId", null);
     request.getSession().setAttribute("sellerIds", sellerIds);
@@ -102,7 +102,7 @@
         String lastName = (String)pageContext.getAttribute("lastName");
         Integer sellerId = (Integer)pageContext.getAttribute("sellerId");
         sellers.put(firstName + " " + lastName, sellerId);
-        sellerIds.put(sellerId, firstName + " " + lastName);
+        sellerIds.put(sellerId.toString(), firstName + " " + lastName);
         if ("Unmatched".equals(firstName) && "Seller".equals(lastName)) {
             sellersPrompt.put(" Unmatched Seller", sellerId);
             request.getSession().setAttribute("unmatchedSellerId", sellerId);
