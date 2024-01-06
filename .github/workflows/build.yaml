@@ -1,6 +1,6 @@
 name: Build PlantSale.war
 run-name: ${{ github.actor }} is building PlantSale.war 🚀
-on: [push]
+on: workflow_dispatch
 jobs:
   build:
     runs-on: ubuntu-latest
