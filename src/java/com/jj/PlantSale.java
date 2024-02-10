@@ -224,7 +224,7 @@ public class PlantSale {
         String pi[] = transactStr.split("Transaction ID: ");
         if (pi.length == 2) {
             String tid = pi[1].replaceAll("==Payer.*$", "")
-                    .replaceAll(" Authorization Code.*$", "");
+                    .replaceAll(" *Authorization Code.*$", "");
             order.setTransactionId(tid);
             if (existingTIDs.contains(tid)) {
                 return null; // this order has aleady been entered

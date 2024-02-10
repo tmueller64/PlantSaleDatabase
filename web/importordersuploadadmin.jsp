@@ -146,7 +146,7 @@
     <c:set var="tid" value="${p[0]}"/>
     <%
         String tid = (String)pageContext.getAttribute("tid");
-        existingTIDs.add(tid.replaceAll("TID: ", "").replaceAll(" .*$", ""));
+        existingTIDs.add(tid.replaceAll("TID: ", "").replaceAll(" .*$", "").replaceAll("Authorization.*$", ""));
     %>
 </c:forEach>
 
