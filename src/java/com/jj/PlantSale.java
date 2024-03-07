@@ -231,7 +231,7 @@ public class PlantSale {
             }
         }
         
-        String prods[] = productsStr.split("#");
+        String prods[] = productsStr.replaceAll("Total: .*$", "").split("#");
         if (prods.length > 1) {
             try {
                 List<OrderProductInfo> opiList = new ArrayList<>();
