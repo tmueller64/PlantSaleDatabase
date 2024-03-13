@@ -73,7 +73,7 @@ Font hdr2font = FontFactory.getFont(FontFactory.HELVETICA, 14, Font.BOLD);
 /><c:set var="orgname" value="${rqr.orgname}"
 /><c:set var="specialrequest" value="${rqr.specialrequest}"
 /><%
-    pp = new Paragraph((String)pageContext.getAttribute("orgname") + " Seed Order", hdrfont);
+    pp = new Paragraph((String)pageContext.getAttribute("orgname") + " Sale", hdrfont);
     pp.setAlignment(Paragraph.ALIGN_CENTER);
     document.add(pp);
     document.add(new Paragraph("Customer:", hdr2font));
@@ -82,7 +82,7 @@ Font hdr2font = FontFactory.getFont(FontFactory.HELVETICA, 14, Font.BOLD);
     document.add(new Paragraph((String)pageContext.getAttribute("custaddress2")));
     document.add(new Paragraph((String)pageContext.getAttribute("custphone")));
     document.add(new Paragraph("Seller: " + (String)pageContext.getAttribute("sellername")));
-    document.add(new Paragraph("Order date: " + pageContext.getAttribute("orderdate").toString()));
+    document.add(new Paragraph("Order Date: " + pageContext.getAttribute("orderdate").toString()));
     document.add(new Paragraph("Special Request: " + pageContext.getAttribute("specialrequest")));
     document.add(new Paragraph(" ")); // blank line before table
     pp = new Paragraph("--------------------------------------------------------------------------------------------------");
