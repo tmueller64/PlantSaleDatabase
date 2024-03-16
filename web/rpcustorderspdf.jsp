@@ -19,7 +19,9 @@ Paragraph pp;
 Font hdrfont = FontFactory.getFont(FontFactory.HELVETICA, 14, Font.BOLD);
 Font hdr2font = FontFactory.getFont(FontFactory.HELVETICA, 14, Font.BOLD);
 
-%><sql:transaction dataSource="${pssdb}"><sql:query var="rq">
+%><c:set var="filter" value=""/><c:if test="${! empty onlineOnly}">
+    <c:set var="filter" value="custorder.specialrequest like '%TID:%' AND"/>
+    </c:if><sql:transaction dataSource="${pssdb}"><sql:query var="rq">
     SELECT DISTINCT CONCAT(seller.lastname, ', ', seller.firstname) as sname, 
           orderdate,
           CONCAT(customer.lastname, ', ', customer.firstname) as cname, 
@@ -34,10 +36,12 @@ Font hdr2font = FontFactory.getFont(FontFactory.HELVETICA, 14, Font.BOLD);
      FROM custorderitem, custorder, saleproduct, customer, seller, org
      WHERE custorder.saleID = ? AND
            custorder.sellerID = seller.id AND
+           custorder.orderdate >= "${dtfrom}" AND custorder.orderdate <= "${dtto}" AND
+           ${filter}
            seller.orgID = org.id AND
            custorderitem.orderID = custorder.id AND
            custorderitem.saleproductID = saleproduct.id AND
-           custorder.customerID = customer.id AND
+           custorder.customerID = customer.id AND 
            rightNum(saleproduct.num) >= rightNum(?) AND rightNum(saleproduct.num) <= rightNum(?)
        ORDER BY cname, custorder.orderdate, custorder.id, rightNum(saleproduct.num);
    <sql:param value="${currentSaleId}"/>
