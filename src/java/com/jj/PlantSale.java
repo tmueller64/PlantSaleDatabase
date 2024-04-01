@@ -178,17 +178,17 @@ public class PlantSale {
             order.setError("Order has invalid date.");
         }
         
-        order.setFirstName(firstNameStr);
-        order.setLastName(lastNameStr);
-        order.setAddress(addressStr);
-        order.setCity(cityStr);
-        order.setState(stateStr);
-        order.setZip(zipStr);       
-        order.setPhone(phoneStr.replaceAll("[^0-9]", ""));
+        order.setFirstName(truncateIfLongerThan(firstNameStr, 30));
+        order.setLastName(truncateIfLongerThan(lastNameStr, 50));
+        order.setAddress(truncateIfLongerThan(addressStr, 255));
+        order.setCity(truncateIfLongerThan(cityStr, 50));
+        order.setState(truncateIfLongerThan(stateStr, 20));
+        order.setZip(truncateIfLongerThan(zipStr, 20));       
+        order.setPhone(truncateIfLongerThan(phoneStr.replaceAll("[^0-9]", ""), 30));
         if (customers.containsKey(order.getPhone())) {
             order.setCustId(customers.get(order.getPhone()).toString());
         }
-        order.setEmail(emailStr);
+        order.setEmail(truncateIfLongerThan(emailStr, 50));
         order.setSellerName(sellerStr);
         
         if (sellers.get(sellerStr) != null) {
@@ -277,6 +277,10 @@ public class PlantSale {
         opi.setAmount(price);
         
         return opi;
+    }
+    
+    private static String truncateIfLongerThan(String s, int len) {
+        return s.length() <= len ? s : s.substring(0, len - 1);
     }
     
     /** Creates a new instance of PlantSale */
