@@ -8,6 +8,7 @@ public class ColumnMap {
     int seller;
     int products;
     int transaction;
+    int customer;
     int firstName;
     int lastName;
     int email;
@@ -35,6 +36,7 @@ public class ColumnMap {
     }
 
     public void setSeller(int seller) {
+        setMaxColumn(seller);
         this.seller = seller;
     }
 
@@ -43,6 +45,7 @@ public class ColumnMap {
     }
 
     public void setProducts(int products) {
+        setMaxColumn(products);
         this.products = products;
     }
 
@@ -51,15 +54,25 @@ public class ColumnMap {
     }
 
     public void setTransaction(int transaction) {
+        setMaxColumn(transaction);
         this.transaction = transaction;
     }
-    
 
+    public int getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(int customer) {
+        setMaxColumn(customer);
+        this.customer = customer;
+    }
+    
     public int getFirstName() {
         return firstName;
     }
 
     public void setFirstName(int firstName) {
+        setMaxColumn(firstName);
         this.firstName = firstName;
     }
 
@@ -68,6 +81,7 @@ public class ColumnMap {
     }
 
     public void setLastName(int lastName) {
+        setMaxColumn(lastName);
         this.lastName = lastName;
     }
 
@@ -76,6 +90,7 @@ public class ColumnMap {
     }
 
     public void setEmail(int email) {
+        setMaxColumn(email);
         this.email = email;
     }
 
@@ -84,6 +99,7 @@ public class ColumnMap {
     }
 
     public void setAddress(int address) {
+        setMaxColumn(address);
         this.address = address;
     }
 
@@ -92,6 +108,7 @@ public class ColumnMap {
     }
 
     public void setCity(int city) {
+        setMaxColumn(city);
         this.city = city;
     }
 
@@ -100,6 +117,7 @@ public class ColumnMap {
     }
 
     public void setState(int state) {
+        setMaxColumn(state);
         this.state = state;
     }
 
@@ -108,6 +126,7 @@ public class ColumnMap {
     }
 
     public void setZip(int zip) {
+        setMaxColumn(zip);
         this.zip = zip;
     }
 
@@ -116,6 +135,7 @@ public class ColumnMap {
     }
 
     public void setPhone(int phone) {
+        setMaxColumn(phone);
         this.phone = phone;
     }
     

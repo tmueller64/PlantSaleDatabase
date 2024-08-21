@@ -84,8 +84,8 @@ public class PlantSale {
     private static final String COLUMN_MISSING_ERROR = "<p>Column %s is missing. Required columns are:</p>";
     private static final String COLUMN_SPEC = "<ol>" + 
             "<li><b>Submission Date</b> - format: yyyy/mm/dd hh:mm:ss</li>" +
-            "<li><b>Student Name for Credit</b> - format: firstname lastname</li>" +
-            "<li><b>My Products</b> - value consists of a list of products followed by a Total entry and a" +
+            "<li><b>Student Name for Credit</b> or <b>Student/Seller Name</b> - format: firstname lastname</li>" +
+            "<li><b>My Products</b> or <b>Items for sale</b> - value consists of a list of products followed by a Total entry and a" +
             "Transaction ID. Each product " + 
             "starts with a # followed by the product number and a space. The product amount is the number " + 
             "between “Amount: “ and “ USD”. The product quantity is the number between “Quantity: “ and “)”. " + 
@@ -94,46 +94,61 @@ public class PlantSale {
             "The transaction ID is the value between “Transaction ID: ” and “==Payer“. It is possible for this " +
             "field to be split into two fields: <b>My Products: Products</b> and <b>My Products: Payer Info</b>, with the " +
             "transaction ID being in the payer info field.</li>" +
+            "<li>If <b>Items for sale</b> is present, then the customer info is extracted from that field based on the following format: Payment InformationFirst Name:<i>fname</i>Last Name:<i>lname</i>AddressStreet:<i>street</i>City:<i>city</i>State:<i>state</i>Zip:<i>zip</i>Country:<i>country</i></li>" +
             "<li><b>First Name</b> - customer first name</li>" +
             "<li><b>Last Name</b> - customer last name</li>" +
-            "<li><b>E-mail</b> - customer email</li>" +
             "<li><b>Street Address</b> - customer address</li>" +
             "<li><b>City</b> - customer city</li>" +
             "<li><b>State / Province</b> - customer state</li>" +
             "<li><b>Postal / Zip Code</b> - customer zip</li>" +
+            "<li><b>E-mail</b> or <b>Customer Email</b> - customer email</li>" +
             "<li><b>Customer Phone Number</b> - format: all non-digits are ignored</li>" +
             "</ol>";
     
     public static ColumnMap parseCSVColumns(CSVRecord record) throws RuntimeException {
         ColumnMap columnMap = new ColumnMap();
         columnMap.setDate(findColumn(record, "Submission Date"));
-        columnMap.setSeller(findColumn(record, "Student Name for Credit"));
+        columnMap.setSeller(findColumn(record, "Student Name for Credit", "Student/Seller Name"));
+        
         try {
             columnMap.setTransaction(findColumn(record, "My Products: Payer Info"));
             columnMap.setProducts(findColumn(record, "My Products: Products"));
         } catch (RuntimeException e) {
-            columnMap.setProducts(findColumn(record, "My Products"));
+            columnMap.setProducts(findColumn(record, "My Products", "Items for sale"));
             columnMap.setTransaction(columnMap.getProducts());
         }
-        columnMap.setFirstName(findColumn(record, "First Name"));
-        columnMap.setLastName(findColumn(record, "Last Name"));
-        columnMap.setEmail(findColumn(record, "E-mail"));
-        columnMap.setAddress(findColumn(record, "Street Address"));
-        columnMap.setCity(findColumn(record, "City"));
-        columnMap.setState(findColumn(record, "State"));
-        columnMap.setZip(findColumn(record, "Zip Code"));
+        try {
+            columnMap.setCustomer(findColumn(record, "Items for sale"));
+        } catch (RuntimeException e) {
+            columnMap.setFirstName(findColumn(record, "First Name"));
+            columnMap.setLastName(findColumn(record, "Last Name"));
+            columnMap.setAddress(findColumn(record, "Street Address"));
+            columnMap.setCity(findColumn(record, "City"));
+            columnMap.setState(findColumn(record, "State"));
+            columnMap.setZip(findColumn(record, "Zip Code"));
+            columnMap.setCustomer(-1);
+        }
+        
+        columnMap.setEmail(findColumn(record, "E-mail", "Customer Email"));
         columnMap.setPhone(findColumn(record, "Customer Phone Number"));
         return columnMap;
     }
     
-    private static int findColumn(CSVRecord record, String name) throws RuntimeException {
-        String lowerName = name.toLowerCase();
+    private static int findColumn(CSVRecord record, String... names) throws RuntimeException {
+        String lowerNames[] = new String[names.length];
+        for (int i = 0; i < names.length; i++) {
+            lowerNames[i] = names[i].toLowerCase();
+        }
         for (int i = 0; i < record.size(); i++) {
-            if (record.get(i).toLowerCase().contains(lowerName)) {
-                return i;
+            String recordName = record.get(i).toLowerCase();
+            for (String lowerName : lowerNames) {
+                if (recordName.contains(lowerName)) {
+                    return i;
+                }
             }
         }
-        throw new RuntimeException(String.format(COLUMN_MISSING_ERROR, name) + COLUMN_SPEC);
+        throw new RuntimeException(String.format(COLUMN_MISSING_ERROR, 
+                String.join(" or ", names)) + COLUMN_SPEC);
     }
     
     /* 
@@ -155,16 +170,33 @@ public class PlantSale {
         String sellerStr = record.get(columnMap.getSeller()).trim();
         String productsStr = record.get(columnMap.getProducts()).replaceAll("[\r\n]", "");
         String transactStr = record.get(columnMap.getTransaction()).replaceAll("[\r\n]", "");
-        String firstNameStr = record.get(columnMap.getFirstName());
-        String lastNameStr = record.get(columnMap.getLastName());
+        
+        String firstNameStr;
+        String lastNameStr;
+        String addressStr;
+        String cityStr;
+        String stateStr;
+        String zipStr;
+        if (columnMap.getCustomer() >= 0) {
+            String custInfo = record.get(columnMap.getCustomer()).split("Payment Information")[1];
+            firstNameStr = custInfo.replaceAll("^.*First Name:", "").replaceAll("Last Name:.*$", "");
+            lastNameStr = custInfo.replaceAll("^.*Last Name:", "").replaceAll("E-Mail:.*$", "");
+            addressStr = custInfo.replaceAll("^.*AddressStreet:", "").replaceAll("City:.*$", "");
+            cityStr = custInfo.replaceAll("^.*City:", "").replaceAll("State:.*$", "");
+            stateStr = custInfo.replaceAll("^.*State:", "").replaceAll("Zip:.*$", "");
+            zipStr = custInfo.replaceAll("^.*Zip:", "").replaceAll("Country:.*$", "");
+        } else {
+            firstNameStr = record.get(columnMap.getFirstName());
+            lastNameStr = record.get(columnMap.getLastName());
+            addressStr = record.get(columnMap.getAddress());
+            cityStr = record.get(columnMap.getCity());
+            stateStr = record.get(columnMap.getState());
+            zipStr = record.get(columnMap.getZip());
+        }
         String emailStr = record.get(columnMap.getEmail());
-        String addressStr = record.get(columnMap.getAddress());
-        String cityStr = record.get(columnMap.getCity());
-        String stateStr = record.get(columnMap.getState());
-        String zipStr = record.get(columnMap.getZip());
         String phoneStr = record.get(columnMap.getPhone());
         
-        String dateFormats[] = { "y/M/d H:m:s", "y-M-d H:m:s", "y/M/d", "y-M-d" };
+        String dateFormats[] = { "y/M/d H:m:s", "y-M-d H:m:s", "y/M/d", "y-M-d", "MMM d, yyyy" };
         for (String dateFormat : dateFormats) {
             try {
                 Date date = new SimpleDateFormat(dateFormat).parse(dateStr);
@@ -174,7 +206,7 @@ public class PlantSale {
                 continue;
             }
         }
-        if (order.getDate() == null) {
+        if (order.getDate() == null || order.getDate().isEmpty()) {
             order.setError("Order has invalid date.");
         }
         
@@ -185,7 +217,7 @@ public class PlantSale {
         order.setState(truncateIfLongerThan(stateStr, 20));
         order.setZip(truncateIfLongerThan(zipStr, 20));       
         order.setPhone(truncateIfLongerThan(phoneStr.replaceAll("[^0-9]", ""), 30));
-        if (customers.containsKey(order.getPhone())) {
+        if (!order.getPhone().isEmpty() && customers.containsKey(order.getPhone())) {
             order.setCustId(customers.get(order.getPhone()).toString());
         }
         order.setEmail(truncateIfLongerThan(emailStr, 50));
@@ -263,8 +295,22 @@ public class PlantSale {
                     ") that is not in the current sale.");
         }
         opi.setId(saleProd.getId());
-        String quanStr = productStr.replaceAll("^.*Quantity: ", "").replaceAll("\\).*$", "");
-        opi.setQuantity(Integer.parseInt(quanStr));
+        String[] quantityNames = { "Quantity", "Each" };
+        int quantity = 0;
+        for (String qname : quantityNames) {
+            try {
+                String quanStr = productStr.replaceAll("^.*" + qname + ": ", "").replaceAll("\\).*$", "");
+                quantity = Integer.parseInt(quanStr);
+                break;
+            } catch (NumberFormatException e) {
+                continue;
+            }
+        }
+        if (quantity < 1) {
+            throw new IllegalArgumentException("Cannot parse valid quantity from: " + productStr);
+        }
+        opi.setQuantity(quantity);
+        
         String amtStr = productStr.replaceAll("^.*Amount: ", "").replaceAll(" USD.*$", "");
         Double price = Double.valueOf(amtStr);
         int priceInt = (int)(price * 100);
