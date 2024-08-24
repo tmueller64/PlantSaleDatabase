@@ -168,7 +168,7 @@ public class PlantSale {
 
         String dateStr = record.get(columnMap.getDate());
         String sellerStr = record.get(columnMap.getSeller()).trim();
-        String productsStr = record.get(columnMap.getProducts()).replaceAll("[\r\n]", "");
+        String productsStr = record.get(columnMap.getProducts());
         String transactStr = record.get(columnMap.getTransaction()).replaceAll("[\r\n]", "");
         
         String firstNameStr;
@@ -255,19 +255,32 @@ public class PlantSale {
         
         String pi[] = transactStr.split("Transaction ID: ");
         if (pi.length == 2) {
-            String tid = pi[1].replaceAll("==Payer.*$", "")
-                    .replaceAll(" *Authorization Code.*$", "");
+            String tid = pi[1].replaceFirst("==Payer.*$", "")
+                    .replaceFirst(" *Authorization Code.*$", "");
             order.setTransactionId(tid);
             if (existingTIDs.contains(tid)) {
                 return null; // this order has aleady been entered
             }
         }
         
-        String prods[] = productsStr.replaceAll("Total: .*$", "").split("#");
-        if (prods.length > 1) {
+        String prods[];
+        int firstProd;
+        if (productsStr.contains("\r\n")) {
+            // Each product is on its own line, product # may either be at the 
+            // beginning or as part of a Style:
+            // Products are separated from other information by a line starting with Total:
+            prods = productsStr.split("\\r\\nTotal:")[0].split("\\r\\n");
+            firstProd = 0;
+        } else {
+            // All products are on one line, separated by #
+            prods = productsStr.replaceFirst("Total: .*$", "").split("#");
+            firstProd = 1;
+        }
+        
+        if (prods.length > firstProd) {
             try {
                 List<OrderProductInfo> opiList = new ArrayList<>();
-                for (int i = 1; i < prods.length; i++) {
+                for (int i = firstProd; i < prods.length; i++) {
                     opiList.add(parseProduct(prods[i], saleProducts));
                 }
                 order.setProducts(opiList);
@@ -275,9 +288,10 @@ public class PlantSale {
                 order.setError(e.getMessage());
             }
         }
-        String totalStr = productsStr.replaceAll("^.*Total: \\$*", "")
-                .replaceAll("Transaction.*$", "")
-                .replaceAll(" USD.*$", "");
+        String totalStr = productsStr.replaceAll("[\r\n]", "")
+                .replaceFirst("^.*Total: \\$*", "")
+                .replaceFirst("Transaction.*$", "")
+                .replaceFirst(" USD.*$", "");
         
         order.setTotalSale(totalStr);
         
@@ -285,10 +299,15 @@ public class PlantSale {
     }
     
     // parse: 01 - DONATIONS (Amount: 5.00 USD, Quantity: 5) 
+    // parse: Double Sided Yard Signs (Amount: 15.00 USD, Each: 1, Style: #56 Witch w/Flying Bat) 
     private static OrderProductInfo parseProduct(String productStr, Map<String, OrderProductInfo> saleProducts) {
         OrderProductInfo opi = new OrderProductInfo();
         
-        opi.setNum(productStr.replaceAll(" .*$", ""));
+        if (productStr.contains("Style: #")) {
+            opi.setNum(productStr.replaceAll("^.*Style: #", "").replaceAll(" .*$", ""));
+        } else {
+            opi.setNum(productStr.replaceAll(" .*$", "").replaceAll("#", ""));
+        }
         OrderProductInfo saleProd = saleProducts.get(opi.getNum());
         if (saleProd == null) {
             throw new IllegalArgumentException("Order in previous row refers to a product (" + opi.getNum() + 
@@ -299,7 +318,9 @@ public class PlantSale {
         int quantity = 0;
         for (String qname : quantityNames) {
             try {
-                String quanStr = productStr.replaceAll("^.*" + qname + ": ", "").replaceAll("\\).*$", "");
+                String quanStr = productStr.replaceAll("^.*" + qname + ": ", "")
+                        .replaceAll("\\).*$", "")
+                        .replaceAll(",.*$", "");
                 quantity = Integer.parseInt(quanStr);
                 break;
             } catch (NumberFormatException e) {
