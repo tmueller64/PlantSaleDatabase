@@ -265,11 +265,11 @@ public class PlantSale {
         
         String prods[];
         int firstProd;
-        if (productsStr.contains("\r\n")) {
+        if (productsStr.contains("\n")) {
             // Each product is on its own line, product # may either be at the 
             // beginning or as part of a Style:
             // Products are separated from other information by a line starting with Total:
-            prods = productsStr.split("\\r\\nTotal:")[0].split("\\r\\n");
+            prods = productsStr.split("\\r*\\nTotal:")[0].split("\\r*\\n");
             firstProd = 0;
         } else {
             // All products are on one line, separated by #
