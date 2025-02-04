@@ -281,6 +281,9 @@ public class PlantSale {
             try {
                 List<OrderProductInfo> opiList = new ArrayList<>();
                 for (int i = firstProd; i < prods.length; i++) {
+                    if (prods[i].trim().startsWith("Subtotal:")) {
+                        continue;
+                    }
                     opiList.add(parseProduct(prods[i], saleProducts));
                 }
                 order.setProducts(opiList);
@@ -300,22 +303,23 @@ public class PlantSale {
     
     // parse: 01 - DONATIONS (Amount: 5.00 USD, Quantity: 5) 
     // parse: Double Sided Yard Signs (Amount: 15.00 USD, Each: 1, Style: #56 Witch w/Flying Bat) 
+    // parse: 05 - HANDLING FEE: 2.00 USD
     private static OrderProductInfo parseProduct(String productStr, Map<String, OrderProductInfo> saleProducts) {
         OrderProductInfo opi = new OrderProductInfo();
         
         if (productStr.contains("Style: #")) {
             opi.setNum(productStr.replaceAll("^.*Style: #", "").replaceAll(" .*$", ""));
         } else {
-            opi.setNum(productStr.replaceAll(" .*$", "").replaceAll("#", ""));
+            opi.setNum(productStr.replaceAll("^.*#", "").replaceAll(" .*$", ""));
         }
         OrderProductInfo saleProd = saleProducts.get(opi.getNum());
         if (saleProd == null) {
             throw new IllegalArgumentException("Order in previous row refers to a product (" + opi.getNum() + 
-                    ") that is not in the current sale.");
+                    ") that is not in the current sale. Product is: " + productStr);
         }
         opi.setId(saleProd.getId());
         String[] quantityNames = { "Quantity", "Each" };
-        int quantity = 0;
+        int quantity = 1;
         for (String qname : quantityNames) {
             try {
                 String quanStr = productStr.replaceAll("^.*" + qname + ": ", "")
@@ -327,12 +331,13 @@ public class PlantSale {
                 continue;
             }
         }
-        if (quantity < 1) {
-            throw new IllegalArgumentException("Cannot parse valid quantity from: " + productStr);
-        }
         opi.setQuantity(quantity);
         
-        String amtStr = productStr.replaceAll("^.*Amount: ", "").replaceAll(" USD.*$", "");
+        String amtStr = productStr.contains("Amount:") ?
+                // handle Amount field
+                productStr.replaceAll("^.*Amount: ", "").replaceAll(" USD.*$", "") :
+                // handle produce without Amount/Quantity fields
+                productStr.replaceAll("^.*: ", "").replaceAll(" USD.*$", "");
         Double price = Double.valueOf(amtStr);
         int priceInt = (int)(price * 100);
         int prodPriceInt = (int)(saleProd.getAmount() * 100);
