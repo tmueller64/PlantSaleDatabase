@@ -81,8 +81,8 @@
 
 <%-- Read seller data --%>
 <sql:query var="r" dataSource="${pssdb}">
-    SELECT seller.id, seller.firstname, seller.lastname FROM seller
-    WHERE seller.orgID = ?;
+    SELECT seller.id, seller.firstname, seller.lastname FROM seller, sellergroup
+    WHERE seller.orgID = ? and seller.sellergroupID = sellergroup.id and sellergroup.active = "yes"
    <sql:param value="${currentOrgId}"/>
 </sql:query>
 <% 

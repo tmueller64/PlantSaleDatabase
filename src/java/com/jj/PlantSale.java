@@ -234,11 +234,13 @@ public class PlantSale {
                 }
             }
             // if still not found, search for single matching case-insensitive substring
-            if (order.getSellerId() == null || order.getSellerId() == 0) {
+            if ((order.getSellerId() == null || order.getSellerId() == 0) &&
+                    sellerStr.trim().length() > 0) {
                 String foundName = null;
                 for (String name : sellers.keySet()) {
-                    if (name.toLowerCase().contains(sellerStr.toLowerCase()) ||
-                        sellerStr.toLowerCase().contains(name.toLowerCase())) {
+                    if (name.trim().length() > 0 &&
+                        (name.toLowerCase().contains(sellerStr.toLowerCase()) ||
+                         sellerStr.toLowerCase().contains(name.toLowerCase()))) {
                         if (foundName == null) {
                             foundName = name;
                         } else {
