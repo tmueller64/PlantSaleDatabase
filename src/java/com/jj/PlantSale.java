@@ -91,7 +91,7 @@ public class PlantSale {
             "between “Amount: “ and “ USD”. The product quantity is the number between “Quantity: “ and “)”. " + 
             "Other data in the product field such as the name of the product is ignored. The total amount is the " + 
             "number between “Total: $“ and “Transaction” The spaces shown here in quotes are significant. " +
-            "The transaction ID is the value between “Transaction ID: ” and “==Payer“. It is possible for this " +
+            "The transaction ID is the value between 'Transaction ID: ' and one of '==Payer', 'Authorization Code' or 'Payment Method'. It is possible for this " +
             "field to be split into two fields: <b>My Products: Products</b> and <b>My Products: Payer Info</b>, with the " +
             "transaction ID being in the payer info field.</li>" +
             "<li>If <b>Items for sale</b> is present, then the customer info is extracted from that field based on the following format: Payment InformationFirst Name:<i>fname</i>Last Name:<i>lname</i>AddressStreet:<i>street</i>City:<i>city</i>State:<i>state</i>Zip:<i>zip</i>Country:<i>country</i></li>" +
@@ -258,6 +258,7 @@ public class PlantSale {
         String pi[] = transactStr.split("Transaction ID: ");
         if (pi.length == 2) {
             String tid = pi[1].replaceFirst("==Payer.*$", "")
+                    .replaceFirst(" *Payment Method.*$", "")
                     .replaceFirst(" *Authorization Code.*$", "");
             order.setTransactionId(tid);
             if (existingTIDs.contains(tid)) {
